@@ -1,7 +1,14 @@
 import React from 'react'
+import { useErrors } from '../lib/util/error'
 import styles from '../styles/Navigation.module.css'
 
 const NavigationBar = () => {
+    const errors = useErrors()
+
+    const load = () => {
+        console.log('Load')
+        errors.pushError('Something happend')
+    }
 
     return (
         <div className={styles.navContainer}>
@@ -11,7 +18,7 @@ const NavigationBar = () => {
                 </div>
 
                 <div className={ [styles.navLoadEvent].join(' ') }>
-                    <button className={styles.navButton}>
+                    <button className={styles.navButton} onClick={() => load()}>
                         Load event log
                     </button>
                 </div>
