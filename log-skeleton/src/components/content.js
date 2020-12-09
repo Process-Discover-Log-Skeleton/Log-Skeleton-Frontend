@@ -13,7 +13,7 @@ const Content = () => {
                 <h4>Mid</h4>
             </div>
 
-            <div className={styles.leftPanel}>
+            <div className={styles.rightPanel}>
                 <h4>Right</h4>
             </div>
         </div>
