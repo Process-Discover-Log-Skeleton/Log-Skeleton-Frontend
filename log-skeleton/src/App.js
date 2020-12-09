@@ -1,23 +1,17 @@
-import logo from './logo.svg';
+import NavigationBar from './components/navigation'
+import Content from './components/content'
+import { ErrorContext, ErrorProvider } from './lib/util/error'
 import './App.css';
+import ErrorToast from './components/error-toast';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ErrorProvider>
+        <ErrorToast></ErrorToast>
+        <NavigationBar></NavigationBar>
+        <Content></Content>
+      </ErrorProvider>
     </div>
   );
 }

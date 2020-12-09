@@ -1,0 +1,54 @@
+.navContainer {
+    background-color: var(--dark-background-color);
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
+    height: 60px;
+    color: white;
+}
+
+/* .navContent {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+} */
+
+.navItem {
+    /* position: relative; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.navLink {
+    float: left;
+}
+
+.navLoadEvent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.navButton {
+    border: 1px rgb(172, 172, 172) solid;
+    border-radius: 6px;
+    padding: 10px 15px;
+    background-color: inherit;
+    color: white;
+    font-weight: 600;
+    font-size: .85rem;
+    transition: color 0.1s ease-in, background-color 0.1s ease-in;
+}
+
+.navButton:hover {
+    /* background-color: rgb(238, 238, 238); */
+    /* color: var(--dark-background-color); */
+    opacity: 0.75;
+    cursor: pointer;
+}
