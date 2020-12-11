@@ -1,7 +1,7 @@
-import { useState, useContext, createContext } from 'react'
+import { useState, useContext, createContext, useEffect } from 'react'
 import { useToasts } from 'react-toast-notifications';
 
-const apiURL = 'http://localhost:5000'//process.env.REACT_APP_API_URL
+const apiURL = process.env.REACT_APP_API_URL
 
 const LogSkeleton = createContext()
 
@@ -16,6 +16,8 @@ const defaultLS = {
 
 export const LogSkeletonProvider = ({children}) => {
     const logSkeleton = useProvideLogSkeleton()
+
+    
     return (
     <LogSkeleton.Provider value={logSkeleton}>
         {children}
@@ -30,85 +32,87 @@ const useProvideLogSkeleton = () => {
     const [logSkeleton, setLogSkeleton] = useState(defaultLS)
     const {addToast} = useToasts()
 
-    const registerEventLog = (file) => {
+    // Update the log skeleton model
+    useEffect(() => {
+        // Fetch log skeleton in case a new id was set.
+        if (logSkeleton.id != null && logSkeleton.logSkeleton == null) {
+            fetchLogSkeleton()
+        }
+    }, [logSkeleton])
+    
+    // Api event-log registration
+    const registerEventLog = async (file) => {
+        // Attach the file to a FormData
         const fd = new FormData()
         fd.append('file', file)
 
-        fetch(`${apiURL}/event-log`, {
+        // Post the event-log to the backend
+        const response = await fetch(`${apiURL}/event-log`, {
             method: 'POST',
             body: fd
-        }).then(res => {
-            if (!res.ok) {
-                res.json().then(res => {
-                    addToast(res.error, {
-                        appearance: 'error',
-                        autoDismiss: true,
-                    })
-                })
-                return
-            }
+        })
 
-            console.log('S');
-            return res.json()
-        }).then( res => {
-            console.log('S2');
-            console.log(res);
+        if (response.ok) { // Response is okay
+            const data = await response.json()
+            
             setLogSkeleton({
                 ...defaultLS,
-                id: res.id
+                id: data.id
             })
+
             addToast('Registered event-log.', {
                 appearance: 'success',
                 autoDismiss: true,
             })
-        }).catch(err => {
-            console.log('Error');
-            console.log(err)
-            // addToast('Check your network', {
-            //     appearance: 'error',
-            //     autoDismiss: true,
-            // })
-        })
+
+        } else { // Something is wrong
+            const err = await response.json()
+
+            addToast(err.error, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
+        }
     }
 
-    const fetchLogSkeleton = () => {
+    // Log Skeleton model fetching
+    const fetchLogSkeleton = async () => {
         let id = logSkeleton.id
 
+        // There is no id
         if (id == null) {
-            console.log('No id');
+            addToast('Failed to load event log id.', {
+                appearance: 'error',
+                autoDismiss: true,
+            })
             return
         }
 
-        fetch(`${apiURL}/log-skeleton/${id}`, {
+        // Request the Log skeleton model from the backend
+        const res = await fetch(`${apiURL}/log-skeleton/${id}`, {
             method: 'POST'
-        }).then(res => {
-            if (!res.ok) {
-                res.json().then(res => {
-                    addToast(res.error, {
-                        appearance: 'error',
-                        autoDismiss: true,
-                    })
-                })
-                return
-            }
+        })
 
-            console.log('S');
-            return res.json()
-        }).then( res => {
-            console.log('S2');
-            console.log(res);
-            addToast('Received log-skeleton model.', {
+        if (res.ok) { // Response is okay
+            const data = await res.json()
+
+            setLogSkeleton({
+                ...logSkeleton,
+                data
+            })
+
+            addToast('Received event-log.', {
                 appearance: 'success',
                 autoDismiss: true,
             })
-        }).catch(err => {
-            console.log('Error');
-            console.log(err)
-            // addToast('Check your network', {
-            //     appearance: 'error',
-            //     autoDismiss: true,
-            // })
-        })
+        }else { // Something is wrong
+            const err = await res.json()
+
+            addToast(err.error, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
+        }
     }
 
     return {
