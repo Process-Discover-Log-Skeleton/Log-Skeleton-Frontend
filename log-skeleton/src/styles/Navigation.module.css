@@ -1,54 +1,85 @@
-.navContainer {
+.navigation {
     background-color: var(--dark-background-color);
-    display: flex;
-    justify-content: flex-start;
-    padding: 0.5rem 1rem;
-    position: fixed;
-    width: 100%;
-    box-sizing: border-box;
+    padding: 0 1rem;
     height: 60px;
-    color: white;
 }
 
-/* .navContent {
-    width: 100%;
+.navContainer {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 100%;
     height: 100%;
-    padding: 1rem;
-} */
+    color: white;
+}
 
 .navItem {
     /* position: relative; */
+    width: 50;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-}
-
-.navLink {
-    float: left;
-}
-
-.navLoadEvent {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: auto;
 }
 
 .navButton {
-    border: 1px rgb(172, 172, 172) solid;
-    border-radius: 6px;
-    padding: 10px 15px;
-    background-color: inherit;
-    color: white;
-    font-weight: 600;
-    font-size: .85rem;
-    transition: color 0.1s ease-in, background-color 0.1s ease-in;
+    padding: 5px;
+    margin: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navButton svg { 
+    width: 35px;
+    height: 30px;
 }
 
 .navButton:hover {
-    /* background-color: rgb(238, 238, 238); */
-    /* color: var(--dark-background-color); */
     opacity: 0.75;
     cursor: pointer;
 }
+
+/* Drop down menu */
+
+.dropDown {
+    position: absolute;
+    top: 54px;
+    width: 200px;
+    background-color: white;
+    color: black;
+    border: 1px gray solid;
+    border-radius: 6px;
+    padding: 0.75rem 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transform: translateX(-45%);
+    overflow: hidden; 
+    border: 1px var(--border-color) solid;
+
+}
+
+.menu {
+    width: 100%;
+}
+
+.menuTitle {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    border-bottom: 0.5px rgb(156, 156, 156) solid;
+}
+
+.menuItem {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+
+.menuItem:hover {
+    cursor: pointer;
+    background-color: #0070f3;
+    color: white;
+}
+

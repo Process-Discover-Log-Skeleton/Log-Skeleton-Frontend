@@ -3,15 +3,20 @@ import Content from './components/content'
 import { ErrorContext, ErrorProvider } from './lib/util/error'
 import './App.css';
 import ErrorToast from './components/error-toast';
+import { LogSkeletonProvider } from './lib/api/log-skeleton';
+import { ToastProvider } from 'react-toast-notifications';
 
 function App() {
   return (
     <div className="App">
-      <ErrorProvider>
-        <ErrorToast></ErrorToast>
-        <NavigationBar></NavigationBar>
-        <Content></Content>
-      </ErrorProvider>
+      <ToastProvider
+        autoDismiss
+        autoDismissTimeout={1500}>
+        <LogSkeletonProvider>
+          <NavigationBar></NavigationBar>
+          <Content></Content>
+        </LogSkeletonProvider>
+      </ToastProvider>
     </div>
   );
 }
