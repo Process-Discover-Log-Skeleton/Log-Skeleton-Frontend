@@ -98,7 +98,7 @@ const useProvideLogSkeleton = () => {
 
             setLogSkeleton({
                 ...logSkeleton,
-                data
+                logSkeleton: data
             })
 
             addToast('Received event-log.', {

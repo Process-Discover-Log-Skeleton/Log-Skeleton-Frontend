@@ -11,7 +11,7 @@ function App() {
     <div className="App">
       <ToastProvider
         autoDismiss
-        autoDismissTimeout={1500}>
+        autoDismissTimeout={2000}>
         <LogSkeletonProvider>
           <NavigationBar></NavigationBar>
           <Content></Content>
