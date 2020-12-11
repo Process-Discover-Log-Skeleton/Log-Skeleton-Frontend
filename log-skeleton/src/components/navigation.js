@@ -1,21 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
-import { useErrors } from '../lib/util/error'
 import styles from '../styles/Navigation.module.css'
 import { ReactComponent as LogSkeletonIcon } from '../assets/menu.svg'
 import { ReactComponent as BellIcon } from '../assets/bell.svg'
 
 const NavigationBar = () => {
-    const errors = useErrors()
     const logSkeleton = useLogSkeleton()
     const dropDown = useRef(null)
-    const dropDownIcon = useRef(null)
+    const filePicker = useRef(null)
     const [showMenu, setShowMenu] = useState(null)
-
-    const load = () => {
-        console.log('Load')
-        logSkeleton.fetchLogSkeleton()
-    }
 
     const onLoad = (event) => {
         const file = event.target.files
@@ -31,12 +24,6 @@ const NavigationBar = () => {
         }
     }
 
-    const handleShowMenu = (event) => {
-        event.preventDefault()
-
-        setShowMenu(true)
-    }
-
     useEffect(() => {
         console.log('effect ' + showMenu)
         if (showMenu) {
@@ -45,6 +32,10 @@ const NavigationBar = () => {
             document.removeEventListener('click', closeMenu)
         }
     }, [showMenu])
+
+    const handleNewEventLog = () => {
+        filePicker.current.click()
+    }
 
     return (
         <nav className={styles.navigation}>
@@ -56,41 +47,21 @@ const NavigationBar = () => {
                 <NavItem
                 icon={<LogSkeletonIcon></LogSkeletonIcon>}>
                     <DropDown>
+                        <DropDownTitle>
+                            Log Skeleton
+                        </DropDownTitle>
                         <DropDownItem>
-                            Event Log
+                            <input type="file" ref={filePicker} style={{display: "none"}} onChange={onLoad}/>
+                            <div onClick={handleNewEventLog}>
+                                ✨ New event log
+                            </div>
                         </DropDownItem>
                         <DropDownItem>
-                            Reset
+                            🔄 Reset
                         </DropDownItem>
                     </DropDown>
                 </NavItem>
             </ul>
-            {/* <div className={styles.navContainer}>
-
-                
-                <div ref={dropDown}>
-                    <div ref={dropDownIcon} className={styles.dropDown} onClick={handleShowMenu}>
-                        <ReactComponent width="60" height="23">
-                        </ReactComponent>
-                    </div>
-                    <div>
-                    {
-                    showMenu ?
-                        (<div className={styles.dropDownContainer}>
-                            <div>
-                                <span>Event-log</span>
-                            </div>
-                            <div>
-                                <span>Reset</span>
-                            </div>
-                            <div>
-                                <span>Help</span>
-                            </div>
-                        </div>) : (null)
-                    }
-                    </div>
-                </div>
-            </div> */}
         </nav>
     )
 }
@@ -99,7 +70,7 @@ const NavItem = (props) => {
     const [open, setOpen] = useState()
     return (
         <li className={styles.navItem}>
-            <a className={styles.navButton} onClick={() => setOpen(!open)}>
+            <a href="#" className={styles.navButton} onClick={() => setOpen(!open)}>
                 {props.icon}
             </a>
 
@@ -120,7 +91,15 @@ const DropDown = (props) => {
 
 const DropDownItem = (props) => {
     return (
-        <a className={styles.menuItem}>
+        <a href="#" className={styles.menuItem}>
+            {props.children}
+        </a>
+    );
+}
+
+const DropDownTitle = (props) => {
+    return (
+        <a href="#" className={styles.menuTitle}>
             {props.children}
         </a>
     );
