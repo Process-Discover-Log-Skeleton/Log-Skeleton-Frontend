@@ -3,18 +3,14 @@ import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from '../styles/Navigation.module.css'
 import { ReactComponent as LogSkeletonIcon } from '../assets/menu.svg'
 import { ReactComponent as BellIcon } from '../assets/bell.svg'
+import { ReactComponent as CheckmarkIcon } from '../assets/checkmark.svg'
+import { ReactComponent as ErrorIcon } from '../assets/errorCross.svg'
 
 const NavigationBar = () => {
     const logSkeleton = useLogSkeleton()
     const dropDown = useRef(null)
     const filePicker = useRef(null)
     const [showMenu, setShowMenu] = useState(null)
-
-    const onLoad = (event) => {
-        const file = event.target.files
-
-        logSkeleton.registerEventLog(file[0])
-    }
 
     function closeMenu (event) {
         console.log(dropDown)
@@ -23,6 +19,17 @@ const NavigationBar = () => {
             setShowMenu(false)
         }
     }
+
+    const onLoad = (event) => {
+        const file = event.target.files
+
+        logSkeleton.registerEventLog(file[0])
+    }
+
+    const clearLogSkeleton = (event) => {
+        logSkeleton.clear()
+    }
+
 
     useEffect(() => {
         console.log('effect ' + showMenu)
@@ -39,25 +46,39 @@ const NavigationBar = () => {
 
     return (
         <nav className={styles.navigation}>
+            <div className={styles.title}>
+                <div>
+                    Log Skeleton
+                </div>
+            </div>
             <ul className={styles.navContainer}>
+                <LogSkeletonStatus></LogSkeletonStatus>
                 <NavItem
-                icon={<BellIcon></BellIcon>}>
+                icon={<BellIcon className={styles.icon}/>}>
                     
                 </NavItem>
                 <NavItem
-                icon={<LogSkeletonIcon></LogSkeletonIcon>}>
+                icon={<LogSkeletonIcon className={styles.icon}/>}>
                     <DropDown>
                         <DropDownTitle>
                             Log Skeleton
                         </DropDownTitle>
                         <DropDownItem>
                             <input type="file" ref={filePicker} style={{display: "none"}} onChange={onLoad}/>
-                            <div onClick={handleNewEventLog}>
+                            <div onClick={handleNewEventLog} id="itemNew">
                                 ✨ New event log
                             </div>
                         </DropDownItem>
                         <DropDownItem>
-                            🔄 Reset
+                            <div onClick={clearLogSkeleton} id="itemClear">
+                                <span> <ErrorIcon className={styles.checkmark}/> </span>
+                                Clear
+                            </div>
+                        </DropDownItem>
+                        <DropDownItem>
+                            <div id="itemReset">
+                                🔄 Reset
+                            </div>
                         </DropDownItem>
                     </DropDown>
                 </NavItem>
@@ -68,8 +89,26 @@ const NavigationBar = () => {
 
 const NavItem = (props) => {
     const [open, setOpen] = useState()
+    const item = useRef(null)
+    const dropDown = useRef(null)
+
+    const closeMenu = (event) => {
+
+        if (item.current && !item.current.contains(event.target)) {
+            setOpen(false)
+        }
+    } 
+
+    useEffect(() => {
+        if (open) {
+            document.addEventListener('click', closeMenu)
+        } else {
+            document.removeEventListener('click', closeMenu)
+        }
+    }, [open])
+
     return (
-        <li className={styles.navItem}>
+        <li className={styles.navItem} ref={item}>
             <a href="#" className={styles.navButton} onClick={() => setOpen(!open)}>
                 {props.icon}
             </a>
@@ -103,6 +142,50 @@ const DropDownTitle = (props) => {
             {props.children}
         </a>
     );
+}
+
+const LogSkeletonStatus = () => {
+    
+    const model = useLogSkeleton()
+
+    if (model.ok()) {
+        return (
+            <NavItem icon={ <>
+                <CheckmarkIcon className={styles.checkmark}/>
+                {model.logSkeleton.file}
+            </>}>
+            <DropDown>
+                <DropDownTitle>
+                    Status
+                </DropDownTitle>
+                <DropDownItem>
+                    <span>
+                        <CheckmarkIcon className={styles.checkmark}/>
+                    </span>
+                    Event log successfully uploaded.
+                </DropDownItem>
+            </DropDown>
+            </NavItem>
+        )
+    } else if (model.hasErrors()) {
+        return (
+        <NavItem icon={ <>
+            <ErrorIcon className={styles.checkmark}/>
+            {model.logSkeleton.file}
+        </>}>
+            <DropDown>
+                <DropDownTitle>
+                    Status
+                </DropDownTitle>
+                <DropDownItem>
+                    <span> <ErrorIcon className={styles.checkmark}/> </span>
+                    {model.logSkeleton.errors}
+                </DropDownItem>
+            </DropDown>
+        </NavItem>)
+    }
+
+    return <></>
 }
 
 export default NavigationBar

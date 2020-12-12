@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from '../styles/Content.module.css'
+import MainPanel from '../components/main-panel'
 
 const Content = () => {
 
@@ -10,7 +11,7 @@ const Content = () => {
             </div>
 
             <div className={styles.midPanel}>
-                <h4>Mid</h4>
+                <MainPanel></MainPanel>
             </div>
 
             <div className={styles.rightPanel}>
