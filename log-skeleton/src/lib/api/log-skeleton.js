@@ -1,16 +1,30 @@
 import { useState, useContext, createContext, useEffect } from 'react'
 import { useToasts } from 'react-toast-notifications';
 
+// URL to the API server
 const apiURL = process.env.REACT_APP_API_URL
 
+// Context for the log skeleton data
 const LogSkeleton = createContext()
 
 const defaultLS = {
+    // ID of the event log in the backend
     id: null,
-    path: null,
+    // File name
+    file: null,
+    // Status returned by the backend
+    status: null,
+    // Potential errors from the backend
+    errors: null,
+    // Original log-skeleton model from the backend
     logSkeleton: null,
+    // Filtered version of the log-skeleton model
+    filteredLogSkeleton: null,
+    // List of forbidden activities
     forbiddenActivities: [],
+    // List of required activities
     requiredActivities: [],
+    // List of selected relationships
     relationships: []
 }
 
@@ -46,20 +60,31 @@ const useProvideLogSkeleton = () => {
         const fd = new FormData()
         fd.append('file', file)
 
-        // Post the event-log to the backend
-        const response = await fetch(`${apiURL}/event-log`, {
-            method: 'POST',
-            body: fd
-        })
+        try {
+            // Post the event-log to the backend
+            var response = await fetch(`${apiURL}/event-log`, {
+                method: 'POST',
+                body: fd
+            })
+        } catch(e) {
+            // In case of any errors
+            addToast(e.message, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
+            return
+        }
 
         if (response.ok) { // Response is okay
             const data = await response.json()
             
             setLogSkeleton({
                 ...defaultLS,
-                id: data.id
+                id: data.id,
+                file: file.name,
+                status: 'ok'
             })
-
+            console.log(file.name)
             addToast('Registered event-log.', {
                 appearance: 'success',
                 autoDismiss: true,
@@ -67,6 +92,13 @@ const useProvideLogSkeleton = () => {
 
         } else { // Something is wrong
             const err = await response.json()
+            
+            setLogSkeleton({
+                ...defaultLS,
+                file: file.name,
+                status: 'failure',
+                errors: err.error
+            })
 
             addToast(err.error, {
                 appearance: 'error',
@@ -81,24 +113,34 @@ const useProvideLogSkeleton = () => {
 
         // There is no id
         if (id == null) {
-            addToast('Failed to load event log id.', {
+            addToast('Please register an event log.', {
+                appearance: 'warning',
+                autoDismiss: true,
+            })
+            return
+        }
+
+        try {
+            // Request the Log skeleton model from the backend
+            var res = await fetch(`${apiURL}/log-skeleton/${id}`, {
+                method: 'POST'
+            })
+        } catch(e) {
+            // In case of any errors
+            addToast(e.message, {
                 appearance: 'error',
                 autoDismiss: true,
             })
             return
         }
 
-        // Request the Log skeleton model from the backend
-        const res = await fetch(`${apiURL}/log-skeleton/${id}`, {
-            method: 'POST'
-        })
-
         if (res.ok) { // Response is okay
             const data = await res.json()
 
             setLogSkeleton({
                 ...logSkeleton,
-                logSkeleton: data
+                logSkeleton: data,
+                status: 'ok'
             })
 
             addToast('Received event-log.', {
@@ -108,6 +150,12 @@ const useProvideLogSkeleton = () => {
         }else { // Something is wrong
             const err = await res.json()
 
+            setLogSkeleton({
+                ...defaultLS,
+                status: 'failure',
+                errors: err.error
+            })
+
             addToast(err.error, {
                 appearance: 'error',
                 autoDismiss: true,
@@ -115,9 +163,50 @@ const useProvideLogSkeleton = () => {
         }
     }
 
+    const clear = () => {
+        setLogSkeleton(defaultLS)
+    }
+
+    const hasEventLog = () => {
+        return logSkeleton.id != null
+    }
+
+    const modelIsLoaded = () => {
+        return hasEventLog() && logSkeleton.logSkeleton != null
+    }
+
+    const ok = () => {
+        return logSkeleton.status == 'ok'
+    }
+
+    const hasErrors = () => {
+        return !ok() && logSkeleton.errors != null
+    }
+
+    const setFilteredLogSkeleton = (filteredLogSkeleton) => {
+        setLogSkeleton({
+            ...logSkeleton,
+            filteredLogSkeleton: filteredLogSkeleton
+        })
+    }
+
+    const resetFilteredLogSkeleton = () => {
+        setLogSkeleton({
+            ...logSkeleton,
+            filteredLogSkeleton: logSkeleton.logSkeleton
+        })
+    }
+
     return {
-        logSkeleton,
-        registerEventLog,
-        fetchLogSkeleton
+        logSkeleton, // The model object
+        setFilteredLogSkeleton, // Sets the filtered log skeleton
+        registerEventLog, // Registers a new event log
+        resetFilteredLogSkeleton, // Resets the filtered log to the original state
+        fetchLogSkeleton, // Fetches the log skeleton model from the api
+        hasEventLog, // Returns if an event log is loaded
+        clear, // Clears the current event log
+        ok, // Returns if the status is 'ok'
+        hasErrors, // Returns if there are any errors
+        modelIsLoaded // Returns if the model has been loaded from the backend
     }
 }
