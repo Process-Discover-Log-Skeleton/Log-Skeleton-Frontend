@@ -28,14 +28,14 @@ const defaultLS = {
     relationships: []
 }
 
-export const LogSkeletonProvider = ({children}) => {
+export const LogSkeletonProvider = ({ children }) => {
     const logSkeleton = useProvideLogSkeleton()
 
-    
+
     return (
-    <LogSkeleton.Provider value={logSkeleton}>
-        {children}
-    </LogSkeleton.Provider>)
+        <LogSkeleton.Provider value={logSkeleton}>
+            {children}
+        </LogSkeleton.Provider>)
 }
 
 export const useLogSkeleton = () => {
@@ -44,7 +44,7 @@ export const useLogSkeleton = () => {
 
 const useProvideLogSkeleton = () => {
     const [logSkeleton, setLogSkeleton] = useState(defaultLS)
-    const {addToast} = useToasts()
+    const { addToast } = useToasts()
 
     // Update the log skeleton model
     useEffect(() => {
@@ -53,7 +53,7 @@ const useProvideLogSkeleton = () => {
             fetchLogSkeleton()
         }
     }, [logSkeleton])
-    
+
     // Api event-log registration
     const registerEventLog = async (file) => {
         // Attach the file to a FormData
@@ -66,7 +66,7 @@ const useProvideLogSkeleton = () => {
                 method: 'POST',
                 body: fd
             })
-        } catch(e) {
+        } catch (e) {
             // In case of any errors
             addToast(e.message, {
                 appearance: 'error',
@@ -77,7 +77,7 @@ const useProvideLogSkeleton = () => {
 
         if (response.ok) { // Response is okay
             const data = await response.json()
-            
+
             setLogSkeleton({
                 ...defaultLS,
                 id: data.id,
@@ -92,7 +92,7 @@ const useProvideLogSkeleton = () => {
 
         } else { // Something is wrong
             const err = await response.json()
-            
+
             setLogSkeleton({
                 ...defaultLS,
                 file: file.name,
@@ -125,7 +125,7 @@ const useProvideLogSkeleton = () => {
             var res = await fetch(`${apiURL}/log-skeleton/${id}`, {
                 method: 'POST'
             })
-        } catch(e) {
+        } catch (e) {
             // In case of any errors
             addToast(e.message, {
                 appearance: 'error',
@@ -140,6 +140,7 @@ const useProvideLogSkeleton = () => {
             setLogSkeleton({
                 ...logSkeleton,
                 logSkeleton: data,
+                filteredLogSkeleton: data,
                 status: 'ok'
             })
 
@@ -147,7 +148,7 @@ const useProvideLogSkeleton = () => {
                 appearance: 'success',
                 autoDismiss: true,
             })
-        }else { // Something is wrong
+        } else { // Something is wrong
             const err = await res.json()
 
             setLogSkeleton({

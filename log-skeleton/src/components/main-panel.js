@@ -8,9 +8,9 @@ const MainPanel = () => {
 
     if (!logSkeleton.hasEventLog()) {
         return (
-        <div className={styles.mainPanel}>
-            <EmptyLogSkeleton></EmptyLogSkeleton>
-        </div>
+            <div className={styles.mainPanel}>
+                <EmptyLogSkeleton></EmptyLogSkeleton>
+            </div>
         )
     }
 
@@ -41,8 +41,8 @@ const EmptyLogSkeleton = () => {
             <div className={styles.eventLogContent}>
                 <LogSkeletonIcon width="70" height="70" stroke="black"></LogSkeletonIcon>
                 <span className={styles.noEventLogTitle}>Load your event log to get started!</span>
-                <input type="file" ref={filePicker} style={{display: "none"}} onChange={onLoad}/>
-                <button 
+                <input type="file" ref={filePicker} style={{ display: "none" }} onChange={onLoad} />
+                <button
                     className={styles.noEventLogButton}
                     onClick={loadEventLog}>
                     Load event log</button>
@@ -58,7 +58,7 @@ const LogSkeletonPanel = () => {
 
     return (
         <div className={styles.logSkeletonPanel}>
-            <pre>{JSON.stringify(model.logSkeleton.logSkeleton, null, 2)}</pre>
+            <pre>{JSON.stringify(model.logSkeleton.filteredLogSkeleton, null, 2)}</pre>
         </div>
     );
 }
