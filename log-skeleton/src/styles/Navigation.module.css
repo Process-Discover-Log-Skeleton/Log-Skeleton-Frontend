@@ -2,14 +2,33 @@
     background-color: var(--dark-background-color);
     padding: 0 1rem;
     height: 60px;
+    margin: 0;
 }
 
 .navContainer {
     display: flex;
     justify-content: flex-end;
-    max-width: 100%;
+    width: 90%;
     height: 100%;
     color: white;
+    overflow: hidden;
+}
+
+.title {
+    float: left;
+    width: 10%;
+    height: 100%;
+    margin: 0;
+    color: white;
+}
+
+.title div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .navItem {
@@ -26,16 +45,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.navButton svg { 
-    width: 40px;
-    height: 25px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .navButton:hover {
     opacity: 0.75;
     cursor: pointer;
+}
+
+.icon {
+    width: 40px;
+    height: 25px;
+}
+
+.checkmark {
+    width: 20px;
+    height: 12px;
+     margin-right: 6px;
 }
 
 /* Drop down menu */
@@ -62,19 +90,22 @@
 }
 
 .menuTitle {
-    height: 20px;
+    height: 15px;
     display: flex;
     align-items: center;
     padding-bottom: 0.5rem;
     padding-left: 0.5rem;
     border-bottom: 0.5px rgb(156, 156, 156) solid;
+    font-weight: 700;
 }
 
 .menuItem {
     height: 35px;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     padding: 0 0.5rem;
+    text-align: left;
 }
 
 .menuItem:hover {
