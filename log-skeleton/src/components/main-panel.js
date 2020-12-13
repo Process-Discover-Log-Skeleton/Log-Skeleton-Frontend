@@ -1,7 +1,8 @@
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import { ReactComponent as LogSkeletonIcon } from '../assets/logSkeleton.svg'
 import styles from '../styles/MainPanel.module.css'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import { filterActivities } from '../lib/logic/activities'
 
 const MainPanel = () => {
     const logSkeleton = useLogSkeleton()
@@ -56,8 +57,30 @@ const EmptyLogSkeleton = () => {
 const LogSkeletonPanel = () => {
     const model = useLogSkeleton()
 
+    useEffect(() => {
+        console.log(model.logSkeleton.filteredLogSkeleton)
+    }, [model])
+
+    const handleFilter = () => {
+        const activities = [
+            "examine thoroughly",
+            "check ticket",
+            "reinitiate request",
+            "pay compensation",
+            "reject request",
+            "examine casually",
+            "register request"
+          ]
+
+        const filtered = filterActivities(model.logSkeleton.logSkeleton, activities)
+        model.setFilteredLogSkeleton(filtered)
+    }
+
     return (
         <div className={styles.logSkeletonPanel}>
+            <button onClick={handleFilter}>
+                Filter activities
+            </button>
             <pre>{JSON.stringify(model.logSkeleton.filteredLogSkeleton, null, 2)}</pre>
         </div>
     );

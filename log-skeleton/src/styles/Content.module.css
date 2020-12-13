@@ -8,6 +8,7 @@
 
 .midPanel {
     /* border-right: 0.75px gray solid; */
+    max-width: 100%;
 }
 
 .leftPanel {
