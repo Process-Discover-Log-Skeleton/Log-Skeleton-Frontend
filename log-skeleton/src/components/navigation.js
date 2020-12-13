@@ -30,6 +30,10 @@ const NavigationBar = () => {
         logSkeleton.clear()
     }
 
+    const resetLogSkeleton = (event) => {
+        logSkeleton.resetFilteredLogSkeleton()
+    }
+
 
     useEffect(() => {
         console.log('effect ' + showMenu)
@@ -76,7 +80,7 @@ const NavigationBar = () => {
                             </div>
                         </DropDownItem>
                         <DropDownItem>
-                            <div id="itemReset">
+                            <div id="itemReset" onClick={resetLogSkeleton}>
                                 🔄 Reset
                             </div>
                         </DropDownItem>
