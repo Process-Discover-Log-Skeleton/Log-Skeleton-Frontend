@@ -1,0 +1,27 @@
+.splitterContainer {
+    border-radius: 6px;
+    background: LightGray;
+    padding: 2px; 
+    width: 85%;
+    height: 30%;  
+    margin: auto;
+    font-size: 10px;
+    line-height: 1.7;
+    font-weight: bold;
+}
+.scrollableContainer {
+    background-color: rgb(244, 246, 248);
+    padding: 0px; 
+    width: 95%;
+    height: 85%;
+    overflow-y: scroll;
+    margin: auto;
+}
+.activityButton {
+    height: 18px;
+    border-radius: 3px;
+    background: LightGray;
+    width: 48%;
+    font-size: 7px;
+    padding: 0px;
+}

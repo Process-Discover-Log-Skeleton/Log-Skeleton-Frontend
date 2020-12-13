@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from '../styles/Content.module.css'
 import MainPanel from '../components/main-panel'
+import Splitter from './split'
 
 const Content = () => {
 
@@ -8,6 +9,7 @@ const Content = () => {
         <div className={styles.content}>
             <div className={styles.leftPanel}>
                 <h4>Left</h4>
+                <Splitter value={10}/>
             </div>
 
             <div className={styles.midPanel}>
