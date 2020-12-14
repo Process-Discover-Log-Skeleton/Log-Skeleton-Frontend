@@ -121,8 +121,22 @@ const useProvideLogSkeleton = () => {
         }
 
         try {
+            let forbidden = ''
+            if (logSkeleton.forbiddenActivities.length > 0) {
+                forbidden = logSkeleton.forbiddenActivities.reduce((prev, val) => {
+                    return `${prev}forbidden=${val}&`
+                }, '')
+            }
+
+            let required = ''
+            if (logSkeleton.requiredActivities.length > 0) {
+                required = logSkeleton.requiredActivities.reduce((prev, val) => {
+                    return `${prev}required=${val}&`
+                }, '')
+            }
+
             // Request the Log skeleton model from the backend
-            var res = await fetch(`${apiURL}/log-skeleton/${id}`, {
+            var res = await fetch(`${apiURL}/log-skeleton/${id}?${forbidden}${required}`, {
                 method: 'POST'
             })
         } catch (e) {
@@ -198,6 +212,20 @@ const useProvideLogSkeleton = () => {
         })
     }
 
+    const setRequiredActivities = (required) => {
+        setLogSkeleton({
+            ...logSkeleton,
+            requiredActivities: required
+        })
+    }
+
+    const setForbiddenActivities = (forbidden) => {
+        setLogSkeleton({
+            ...logSkeleton,
+            forbiddenActivities: forbidden
+        })
+    }
+
     return {
         logSkeleton, // The model object
         setFilteredLogSkeleton, // Sets the filtered log skeleton
@@ -208,6 +236,8 @@ const useProvideLogSkeleton = () => {
         clear, // Clears the current event log
         ok, // Returns if the status is 'ok'
         hasErrors, // Returns if there are any errors
-        modelIsLoaded // Returns if the model has been loaded from the backend
+        modelIsLoaded, // Returns if the model has been loaded from the backend
+        setRequiredActivities,
+        setForbiddenActivities,
     }
 }

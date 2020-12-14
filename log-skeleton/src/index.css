@@ -24,3 +24,17 @@ a {
   text-decoration: none;
   color: black;
 }
+
+
+button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px var(--border-color) solid;
+  background-color: white;
+  font-weight: 600;
+}
+
+button:hover {
+  cursor: pointer;
+}
