@@ -2,7 +2,7 @@
 export const filterRelationships = (logSkeleton, relationships) => {
     var filteredLogSkeleton = {}
 
-    // Set the filtered set of activities
+    // Set the set of activities
     filteredLogSkeleton['activities'] = logSkeleton['activities']
     // Set the parameters
     filteredLogSkeleton['parameters'] = logSkeleton['parameters']
