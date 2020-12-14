@@ -1,34 +1,32 @@
 import React from 'react';
 import styles from '../styles/Split.module.css';
 
-class SplitActivity extends React.Component {
-    render() {
-      return (
-        //probably button will not be the correct type
-        <div>
-            <button className={styles.activityButton}>Split Activity {this.props.value}</button>
-            <button className={styles.activityButton}>Over Activity {this.props.value + 1}</button>
-        </div>
-      );
-    }
-  }
+const SplitActivity = (props) => {
 
-class Splitter extends React.Component {
-    render() {
-        var splits =[];
-        for (let i = 0; i < this.props.value; i++) {
-            splits.push(<SplitActivity value={i*2}/>);
-        }
-        return(
-            <div className={styles.splitterContainer}>
-                Activity Splitters
-                <div className={styles.scrollableContainer}>
-                    <p/>
-                    {splits}
-                </div>
+    return (
+        <div>
+            <button className={styles.activityButton}>Split Activity {props.value[0]}</button>
+            <button className={styles.activityButton}>Over Activity {props.value[1]}</button>
+        </div>
+    );
+}
+
+const Splitter = (props) => {
+    //const splits = props.value.map(item => {
+    //    return (<SplitActivity value = {item} />)
+    //})
+    return (        
+        <div className={styles.splitterContainer}>
+            Activity Splitters
+            <div className={styles.scrollableContainer}>
+                {
+                props.value.map(item => {
+                    return (<SplitActivity value = {item} />)
+                })
+                }
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 export default Splitter;
