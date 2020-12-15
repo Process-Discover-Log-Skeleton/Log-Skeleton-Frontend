@@ -3,6 +3,7 @@ import { ReactComponent as LogSkeletonIcon } from '../assets/logSkeleton.svg'
 import styles from '../styles/MainPanel.module.css'
 import { useEffect, useRef } from 'react'
 import { filterActivities } from '../lib/logic/activities'
+import { filterRelationships } from '../lib/logic/relationships'
 
 const MainPanel = () => {
     const logSkeleton = useLogSkeleton()
@@ -57,10 +58,6 @@ const EmptyLogSkeleton = () => {
 const LogSkeletonPanel = () => {
     const model = useLogSkeleton()
 
-    useEffect(() => {
-        console.log(model.logSkeleton.filteredLogSkeleton)
-    }, [model])
-
     const handleFilter = () => {
         const activities = [
             "examine thoroughly",
@@ -73,13 +70,23 @@ const LogSkeletonPanel = () => {
           ]
 
         const filtered = filterActivities(model.logSkeleton.logSkeleton, activities)
-        model.setFilteredLogSkeleton(filtered)
+
+        const relationships = [
+            "equivalence",
+            "always_after",
+            "always_before",
+            "never_together"
+        ]
+
+        const filteredAll = filterRelationships(filtered, relationships)
+
+        model.setFilteredLogSkeleton(filteredAll)
     }
 
     return (
         <div className={styles.logSkeletonPanel}>
             <button onClick={handleFilter}>
-                Filter activities
+                Filter activities and relationships
             </button>
             <pre>{JSON.stringify(model.logSkeleton.filteredLogSkeleton, null, 2)}</pre>
         </div>

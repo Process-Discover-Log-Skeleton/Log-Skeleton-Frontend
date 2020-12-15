@@ -1,6 +1,7 @@
 .container {
     width: calc(100% - 30px);
     margin: 15px;
+    max-height: 50%;
     padding-bottom: 1rem;
     border-bottom: 0.5px var(--border-color) solid;
 }
@@ -21,14 +22,22 @@
     margin-bottom: 0.75rem;
 }
 
-.activityButton {
+.buttonStyle {
     font-size: 0.7rem;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 0.6rem;
     text-align: center;
     display: inline-block;
-    background-color: rgb(203, 231, 255);
-    color: rgb(52, 122, 226);
     border-radius: 15px;
     border: none;
+}
+
+.activityButton {
+    background-color: rgb(203, 231, 255);
+    color: rgb(52, 122, 226);
+}
+
+.disabledButton {
+    background-color: rgb(238, 238, 238);
+    color: rgb(112, 112, 112);
 }

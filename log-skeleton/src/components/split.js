@@ -5,8 +5,8 @@ const SplitActivity = (props) => {
 
     return (
         <div>
-            <button className={styles.activityButton}>Split Activity {props.value[0]}</button>
-            <button className={styles.activityButton}>Over Activity {props.value[1]}</button>
+            <button className={[styles.buttonStyle, styles.activityButton].join(' ')}>Split Activity {props.value[0]}</button>
+            <button className={[styles.buttonStyle, styles.activityButton].join(' ')}>Over Activity {props.value[1]}</button>
         </div>
     );
 }
