@@ -8,7 +8,6 @@ const Content = () => {
     return (
         <div className={styles.content}>
             <div className={styles.leftPanel}>
-                <h4>Left</h4>
                 <Splitter value={[[1,2],[3,4]]}/>
             </div>
 

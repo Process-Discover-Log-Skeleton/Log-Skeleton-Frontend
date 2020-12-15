@@ -16,6 +16,8 @@ const defaultLS = {
     status: null,
     // Potential errors from the backend
     errors: null,
+    // Set of activities occuring in the model
+    activities: [],
     // Original log-skeleton model from the backend
     logSkeleton: null,
     // Filtered version of the log-skeleton model
@@ -76,11 +78,12 @@ const useProvideLogSkeleton = () => {
         }
 
         if (response.ok) { // Response is okay
-            const data = await response.json()
+            const {id, activities} = await response.json()
 
             setLogSkeleton({
                 ...defaultLS,
-                id: data.id,
+                id: id,
+                activities: activities,
                 file: file.name,
                 status: 'ok'
             })
