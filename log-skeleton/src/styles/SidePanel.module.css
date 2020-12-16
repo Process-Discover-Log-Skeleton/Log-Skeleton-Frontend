@@ -1,0 +1,57 @@
+.container {
+    width: calc(100% - 30px);
+    padding: 15px;
+    margin: 10px 0;
+    /* max-height: 50%; */
+    /* padding-bottom: 1rem; */
+    border-bottom: 0.5px var(--border-color) solid;
+    overflow: scroll;
+}
+
+.contentContainer {
+    display: grid;
+    grid-auto-flow: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 0;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 1rem;
+    /* text-align: left; */
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.buttonStyle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 0.6rem;
+    text-align: center;
+    display: inline-block;
+    border-radius: 15px;
+    border: none;
+    transition: background-color 400ms ease-out;
+    /* transition: color 300ms ease-out; */
+}
+
+.activityButton {
+    background-color: rgb(203, 231, 255);
+    color: rgb(52, 122, 226);
+}
+
+.redButton {
+    background-color: rgb(255, 203, 203);
+    color: rgb(226, 52, 52);
+}
+
+.greenButton {
+    background-color: rgb(203, 255, 210);
+    color: rgb(19, 160, 31);
+}
+
+.disabledButton {
+    background-color: rgb(238, 238, 238);
+    color: rgb(112, 112, 112);
+}

@@ -1,8 +1,15 @@
 import { useState, useContext, createContext, useEffect } from 'react'
 import { useToasts } from 'react-toast-notifications';
+import { filterActivities } from '../logic/activities'
+import { filterRelationships } from '../logic/relationships'
 
 // URL to the API server
 const apiURL = process.env.REACT_APP_API_URL
+
+const relationships = [
+    "always_after",
+    "always_before"
+]
 
 // Context for the log skeleton data
 const LogSkeleton = createContext()
@@ -16,16 +23,11 @@ const defaultLS = {
     status: null,
     // Potential errors from the backend
     errors: null,
+    activities: null,
     // Original log-skeleton model from the backend
     logSkeleton: null,
     // Filtered version of the log-skeleton model
-    filteredLogSkeleton: null,
-    // List of forbidden activities
-    forbiddenActivities: [],
-    // List of required activities
-    requiredActivities: [],
-    // List of selected relationships
-    relationships: []
+    filteredLogSkeleton: null
 }
 
 export const LogSkeletonProvider = ({ children }) => {
@@ -44,15 +46,49 @@ export const useLogSkeleton = () => {
 
 const useProvideLogSkeleton = () => {
     const [logSkeleton, setLogSkeleton] = useState(defaultLS)
+    const [activeActivities, setActiveActivities] = useState([])
+    const [activeRelationships, setActiveRelationships] = useState(relationships)
+    const [forbiddenActivities, setForbiddenActivities] = useState([])
+    const [requiredActivities, setRequiredActivities] = useState([])
+
     const { addToast } = useToasts()
+
+
+    const filterLogSkelton = (log) => {
+        // Filter based on the activities
+        var filtered = filterActivities(log, activeActivities)
+
+        
+        // Filter based on the activities
+        filtered = filterRelationships(filtered, activeRelationships)
+
+        return filtered
+    }
 
     // Update the log skeleton model
     useEffect(() => {
         // Fetch log skeleton in case a new id was set.
-        if (logSkeleton.id != null && logSkeleton.logSkeleton == null) {
+        if (!modelIsLoaded()) {
             fetchLogSkeleton()
         }
     }, [logSkeleton])
+
+    useEffect(() => {
+        if (!modelIsLoaded()) {
+            return
+        }
+
+        setFilteredLogSkeleton(filterLogSkelton(logSkeleton.logSkeleton))
+    }, [activeActivities, activeRelationships])
+
+    useEffect(() => {
+        if (!modelIsLoaded()) {
+            return
+        }
+
+        fetchLogSkeleton()
+
+    }, [forbiddenActivities, requiredActivities])
 
     // Api event-log registration
     const registerEventLog = async (file) => {
@@ -76,14 +112,16 @@ const useProvideLogSkeleton = () => {
         }
 
         if (response.ok) { // Response is okay
-            const data = await response.json()
+            const {id, activities} = await response.json()
 
             setLogSkeleton({
                 ...defaultLS,
-                id: data.id,
+                id: id,
+                activities: activities,
                 file: file.name,
                 status: 'ok'
             })
+            setActiveActivities(activities)
             console.log(file.name)
             addToast('Registered event-log.', {
                 appearance: 'success',
@@ -122,21 +160,23 @@ const useProvideLogSkeleton = () => {
 
         try {
             let forbidden = ''
-            if (logSkeleton.forbiddenActivities.length > 0) {
-                forbidden = logSkeleton.forbiddenActivities.reduce((prev, val) => {
+            if (forbiddenActivities.length > 0) {
+                forbidden = forbiddenActivities.reduce((prev, val) => {
                     return `${prev}forbidden=${val}&`
                 }, '')
             }
 
             let required = ''
-            if (logSkeleton.requiredActivities.length > 0) {
-                required = logSkeleton.requiredActivities.reduce((prev, val) => {
+            if (requiredActivities.length > 0) {
+                required = requiredActivities.reduce((prev, val) => {
                     return `${prev}required=${val}&`
                 }, '')
             }
 
+            let extension = 'extended-trace=0&'
+
             // Request the Log skeleton model from the backend
-            var res = await fetch(`${apiURL}/log-skeleton/${id}?${forbidden}${required}`, {
+            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}`, {
                 method: 'POST'
             })
         } catch (e) {
@@ -150,18 +190,16 @@ const useProvideLogSkeleton = () => {
 
         if (res.ok) { // Response is okay
             const data = await res.json()
-
+            console.log(data);
+            // if (!modelIsLoaded()) {
             setLogSkeleton({
                 ...logSkeleton,
                 logSkeleton: data,
-                filteredLogSkeleton: data,
+                filteredLogSkeleton: filterLogSkelton(data),
                 status: 'ok'
             })
 
-            addToast('Received event-log.', {
-                appearance: 'success',
-                autoDismiss: true,
-            })
+            setActiveActivities(data.activities)
         } else { // Something is wrong
             const err = await res.json()
 
@@ -212,22 +250,14 @@ const useProvideLogSkeleton = () => {
         })
     }
 
-    const setRequiredActivities = (required) => {
-        setLogSkeleton({
-            ...logSkeleton,
-            requiredActivities: required
-        })
-    }
-
-    const setForbiddenActivities = (forbidden) => {
-        setLogSkeleton({
-            ...logSkeleton,
-            forbiddenActivities: forbidden
-        })
-    }
-
     return {
         logSkeleton, // The model object
+        activeActivities,
+        activeRelationships,
+        forbiddenActivities,
+        requiredActivities,
+        setActiveActivities,
+        setActiveRelationships,
         setFilteredLogSkeleton, // Sets the filtered log skeleton
         registerEventLog, // Registers a new event log
         resetFilteredLogSkeleton, // Resets the filtered log to the original state
@@ -238,6 +268,6 @@ const useProvideLogSkeleton = () => {
         hasErrors, // Returns if there are any errors
         modelIsLoaded, // Returns if the model has been loaded from the backend
         setRequiredActivities,
-        setForbiddenActivities,
+        setForbiddenActivities
     }
 }

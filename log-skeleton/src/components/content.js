@@ -1,18 +1,28 @@
 import React from 'react'
 import styles from '../styles/Content.module.css'
 import MainPanel from '../components/main-panel'
-import Splitter from "./split";
-import RequiredActivities from "./required-activities";
-import ForbiddenActivities from "./forbidden-activities";
-import Activities from "./activities";
-import Relationships from "./relationships";
+import Splitter from './split'
+import Relationships from './relationships'
+import Activities from './activities'
+import { useLogSkeleton } from '../lib/api/log-skeleton'
+import { RequiredActivities, ForbiddenActivities } from "./activity-filter";
 
 const Content = () => {
+    const { modelIsLoaded } = useLogSkeleton()
+    
+    if (!modelIsLoaded()) {
+        return (
+            <div className={styles.emptyContent}>
+                <div className={styles.midPanel}>
+                    <MainPanel></MainPanel>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.content}>
-            <div className={styles.leftPanel}>
-                <h4>Left</h4>
+            <div className={styles.sidePanel}>
                 <RequiredActivities></RequiredActivities>
                 <ForbiddenActivities></ForbiddenActivities>
                 <Splitter value={[[1,2],[3,4]]}/>
@@ -21,9 +31,7 @@ const Content = () => {
             <div className={styles.midPanel}>
                 <MainPanel></MainPanel>
             </div>
-
-            <div className={styles.rightPanel}>
-                <h4>Right</h4>
+            <div className={styles.sidePanel}>
                 <Activities></Activities>
                 <Relationships></Relationships>
             </div>
