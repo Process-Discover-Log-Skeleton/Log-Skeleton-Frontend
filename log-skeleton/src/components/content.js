@@ -4,6 +4,8 @@ import MainPanel from '../components/main-panel'
 import Splitter from "./split";
 import RequiredActivities from "./required-activities";
 import ForbiddenActivities from "./forbidden-activities";
+import Activities from "./activities";
+import Relationships from "./relationships";
 
 const Content = () => {
 
@@ -22,6 +24,8 @@ const Content = () => {
 
             <div className={styles.rightPanel}>
                 <h4>Right</h4>
+                <Activities></Activities>
+                <Relationships></Relationships>
             </div>
         </div>
     );
