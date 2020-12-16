@@ -1,0 +1,93 @@
+.scrollCont{
+    color: white;
+    font-size: 20px;
+    margin: 3px;
+}
+
+.scrollComp{
+    background-color: var(--dark-background-color);
+    height: 26vh;
+    min-height: 300px;
+    width: 90%;
+    margin: auto;
+    border-radius: 5px;
+    min-width: 200px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.scrollBar{
+    text-align: left;
+    text-indent: 5%;
+    background-color: var(--dark-background-color);
+    height: 20vh;
+    min-height: 220px;
+    width: 90%;
+    margin: auto;
+    overflow: auto;
+    border-radius: 3px;
+}
+
+.selectBtn{
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    background-color: lightslategrey;
+    border: none;
+    margin: 5px;
+    border-radius: 6px;
+    float: inside;
+}
+
+.listItem{
+    text-align: left;
+    color: blue;
+    background-color: var(--dark-background-color);
+    margin-left: 10px;
+}
+
+.btn{
+    color: white;
+    font-size: 15px;
+    text-align: left;
+    width: 90%;
+    text-indent: 5%;
+    background-color: lightslategrey;
+    border-radius: 3px;
+    border: none;
+    margin: 1px;
+}
+
+.btn:hover{
+    color: white;
+    font-size: 15px;
+    text-align: left;
+    width: 90%;
+    text-indent: 5%;
+    background-color: darkgray;
+    border-radius: 3px;
+    border: none;
+}
+
+.btnSelected {
+    color: white;
+    font-size: 15px;
+    text-align: left;
+    width: 90%;
+    text-indent: 5%;
+    background-color: forestgreen;
+    border-radius: 3px;
+    border: none;
+    margin: 1px;
+}
+
+.btnSelected:hover{
+    color: white;
+    font-size: 15px;
+    text-align: left;
+    width: 90%;
+    text-indent: 5%;
+    background-color: limegreen;
+    border-radius: 3px;
+    border: none;
+}
