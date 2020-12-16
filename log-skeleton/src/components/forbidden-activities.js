@@ -1,4 +1,4 @@
-import ActivityFilter from "./actvivty-filter";
+import ActivityFilter from "./activivty-filter";
 
 
 const ForbiddenActivities = () =>{
