@@ -1,4 +1,4 @@
-import ActivityFilter from "./activivty-filter";
+import ActivityFilter from "./activity-filter";
 
 
 const RequiredActivities = () =>{
