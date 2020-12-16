@@ -49,13 +49,11 @@ const ActivityBox = ({title, callback}) => {
     }, [toggle])
 
     return (
-        <div>
-            <button 
-            className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
-            onClick={handleToggle}>
-                {title}
-            </button>
-        </div>
+        <button 
+        className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
+        onClick={handleToggle}>
+            {title}
+        </button>
     )
 }
 

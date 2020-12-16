@@ -1,9 +1,11 @@
 .container {
     width: calc(100% - 30px);
-    margin: 15px;
-    max-height: 50%;
-    padding-bottom: 1rem;
+    padding: 15px;
+    margin: 10px 0;
+    /* max-height: 50%; */
+    /* padding-bottom: 1rem; */
     border-bottom: 0.5px var(--border-color) solid;
+    overflow: scroll;
 }
 
 .contentContainer {
@@ -16,8 +18,8 @@
 
 .title {
     font-weight: 700;
-    font-size: 0.9rem;
-    text-align: left;
+    font-size: 1rem;
+    /* text-align: left; */
     width: 100%;
     margin-bottom: 0.75rem;
 }
@@ -37,6 +39,16 @@
 .activityButton {
     background-color: rgb(203, 231, 255);
     color: rgb(52, 122, 226);
+}
+
+.redButton {
+    background-color: rgb(255, 203, 203);
+    color: rgb(226, 52, 52);
+}
+
+.greenButton {
+    background-color: rgb(203, 255, 210);
+    color: rgb(19, 160, 31);
 }
 
 .disabledButton {

@@ -5,6 +5,7 @@ import Splitter from './split'
 import Relationships from './relationships'
 import Activities from './activities'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
+import { RequiredActivities, ForbiddenActivities } from "./activity-filter";
 
 const Content = () => {
     const { modelIsLoaded } = useLogSkeleton()
@@ -22,6 +23,8 @@ const Content = () => {
     return (
         <div className={styles.content}>
             <div className={styles.sidePanel}>
+                <RequiredActivities></RequiredActivities>
+                <ForbiddenActivities></ForbiddenActivities>
                 <Splitter value={[[1,2],[3,4]]}/>
             </div>
 

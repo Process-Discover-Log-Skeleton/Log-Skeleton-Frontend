@@ -15,8 +15,8 @@ const Relationships = () => {
     const model = useLogSkeleton()
 
     const handleRelationshipToggle = (item, include) => {
-
         var res = model.activeRelationships
+
         if (include && !res.includes(item)) {
             model.setActiveRelationships(model.activeRelationships.concat([item]))
         }else if(!include && res.includes(item)) {
@@ -49,7 +49,6 @@ const RelationshipsBox = ({ initial, title, callback }) => {
 
     const handleToggle = (event) => {
         setToggle(!toggle)
-        console.log('toggle')
     }
 
     useEffect(() => {
@@ -57,13 +56,11 @@ const RelationshipsBox = ({ initial, title, callback }) => {
     }, [toggle])
 
     return (
-        <div>
-            <button
-                className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
-                onClick={handleToggle}>
-                {title.replaceAll('_', ' ')}
-            </button>
-        </div>
+        <button
+            className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
+            onClick={handleToggle}>
+            {title.replaceAll('_', ' ')}
+        </button>
     )
 }
 
