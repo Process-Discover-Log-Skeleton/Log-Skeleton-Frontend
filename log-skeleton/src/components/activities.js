@@ -1,33 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton';
 import styles from '../styles/SidePanel.module.css'
-import { filterActivities } from '../lib/logic/activities'
 
 const Activities = () => {
     const model = useLogSkeleton()
 
     const activities = model.logSkeleton.logSkeleton.activities
-    
-    const [activeActivities, setActiveActivities] = useState(activities)
 
     const handleActivityToggle = (item, include) => {
-        if (include && !activeActivities.includes(item)) {
+        if (include && !model.activeActivities.includes(item)) {
         // If include is toggled and the item is not included
             // Add the item to the list
-            setActiveActivities(activeActivities.concat([item]))
-        }else if (!include && activeActivities.includes(item)) {
+            model.setActiveActivities(model.activeActivities.concat([item]))
+        }else if (!include && model.activeActivities.includes(item)) {
         // If not include is toggled and the item is included
-            setActiveActivities(activeActivities.filter(val => val != item))
+            model.setActiveActivities(model.activeActivities.filter(val => val != item))
         }
     }
-
-    useEffect(() => {
-        // Filter based on the activities
-        const filtered = filterActivities(model.logSkeleton.logSkeleton, activeActivities)
-
-        model.setFilteredLogSkeleton(filtered)
-    }, [activeActivities])
-    
 
     return (     
         <div className={styles.container}>

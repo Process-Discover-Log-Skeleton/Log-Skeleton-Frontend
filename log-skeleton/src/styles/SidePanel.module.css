@@ -23,13 +23,15 @@
 }
 
 .buttonStyle {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
     line-height: 0.6rem;
     text-align: center;
     display: inline-block;
     border-radius: 15px;
     border: none;
+    transition: background-color 400ms ease-out;
+    /* transition: color 300ms ease-out; */
 }
 
 .activityButton {

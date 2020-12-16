@@ -1,8 +1,15 @@
 import { useState, useContext, createContext, useEffect } from 'react'
 import { useToasts } from 'react-toast-notifications';
+import { filterActivities } from '../logic/activities'
+import { filterRelationships } from '../logic/relationships'
 
 // URL to the API server
 const apiURL = process.env.REACT_APP_API_URL
+
+const relationships = [
+    "always_after",
+    "always_before"
+]
 
 // Context for the log skeleton data
 const LogSkeleton = createContext()
@@ -16,8 +23,6 @@ const defaultLS = {
     status: null,
     // Potential errors from the backend
     errors: null,
-    // Set of activities occuring in the model
-    activities: [],
     // Original log-skeleton model from the backend
     logSkeleton: null,
     // Filtered version of the log-skeleton model
@@ -26,8 +31,6 @@ const defaultLS = {
     forbiddenActivities: [],
     // List of required activities
     requiredActivities: [],
-    // List of selected relationships
-    relationships: []
 }
 
 export const LogSkeletonProvider = ({ children }) => {
@@ -46,6 +49,9 @@ export const useLogSkeleton = () => {
 
 const useProvideLogSkeleton = () => {
     const [logSkeleton, setLogSkeleton] = useState(defaultLS)
+    const [activeActivities, setActiveActivities] = useState([])
+    const [activeRelationships, setActiveRelationships] = useState(relationships)
+
     const { addToast } = useToasts()
 
     // Update the log skeleton model
@@ -55,6 +61,21 @@ const useProvideLogSkeleton = () => {
             fetchLogSkeleton()
         }
     }, [logSkeleton])
+
+    useEffect(() => {
+        if (!modelIsLoaded()) {
+            return
+        }
+
+        // Filter based on the activities
+        var filtered = filterActivities(logSkeleton.logSkeleton, activeActivities)
+
+        console.log('filter');
+        // Filter based on the activities
+        filtered = filterRelationships(filtered, activeRelationships)
+
+        setFilteredLogSkeleton(filtered)
+    }, [activeActivities, activeRelationships])
 
     // Api event-log registration
     const registerEventLog = async (file) => {
@@ -87,6 +108,7 @@ const useProvideLogSkeleton = () => {
                 file: file.name,
                 status: 'ok'
             })
+            setActiveActivities(activities)
             console.log(file.name)
             addToast('Registered event-log.', {
                 appearance: 'success',
@@ -156,10 +178,13 @@ const useProvideLogSkeleton = () => {
 
             setLogSkeleton({
                 ...logSkeleton,
+                activities: data.activities,
                 logSkeleton: data,
                 filteredLogSkeleton: data,
                 status: 'ok'
             })
+            setActiveActivities(data.activities)
+            setActiveRelationships(relationships)
 
             addToast('Received event-log.', {
                 appearance: 'success',
@@ -231,6 +256,10 @@ const useProvideLogSkeleton = () => {
 
     return {
         logSkeleton, // The model object
+        activeActivities,
+        activeRelationships,
+        setActiveActivities,
+        setActiveRelationships,
         setFilteredLogSkeleton, // Sets the filtered log skeleton
         registerEventLog, // Registers a new event log
         resetFilteredLogSkeleton, // Resets the filtered log to the original state
@@ -241,6 +270,6 @@ const useProvideLogSkeleton = () => {
         hasErrors, // Returns if there are any errors
         modelIsLoaded, // Returns if the model has been loaded from the backend
         setRequiredActivities,
-        setForbiddenActivities,
+        setForbiddenActivities
     }
 }

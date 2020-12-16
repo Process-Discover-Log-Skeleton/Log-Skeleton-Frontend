@@ -11,10 +11,10 @@ const keys = [
 export const filterActivities = (logSkeleton, activities) => {
     var filteredLogSkeleton = {}
 
-    // Set the filtered set of activities
-    filteredLogSkeleton['activities'] = activities
-    // Set the parameters
-    filteredLogSkeleton['parameters'] = logSkeleton['parameters']
+    // // Set the filtered set of activities
+    // filteredLogSkeleton['activities'] = activities
+    // // Set the parameters
+    // filteredLogSkeleton['parameters'] = logSkeleton['parameters']
 
     // Map all the relationships to filter the activities
     for (let key of keys) {

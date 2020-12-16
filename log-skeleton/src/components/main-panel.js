@@ -58,36 +58,8 @@ const EmptyLogSkeleton = () => {
 const LogSkeletonPanel = () => {
     const model = useLogSkeleton()
 
-    const handleFilter = () => {
-        const activities = [
-            "examine thoroughly",
-            "check ticket",
-            "reinitiate request",
-            "pay compensation",
-            "reject request",
-            "examine casually",
-            "register request"
-          ]
-
-        const filtered = filterActivities(model.logSkeleton.logSkeleton, activities)
-
-        const relationships = [
-            "equivalence",
-            "always_after",
-            "always_before",
-            "never_together"
-        ]
-
-        const filteredAll = filterRelationships(filtered, relationships)
-
-        model.setFilteredLogSkeleton(filteredAll)
-    }
-
     return (
         <div className={styles.logSkeletonPanel}>
-            <button onClick={handleFilter}>
-                Filter activities and relationships
-            </button>
             <pre>{JSON.stringify(model.logSkeleton.filteredLogSkeleton, null, 2)}</pre>
         </div>
     );

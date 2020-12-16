@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton'
-import { filterRelationships } from '../lib/logic/relationships'
 import styles from '../styles/SidePanel.module.css'
 
 const relationships = [
@@ -15,26 +14,15 @@ const relationships = [
 const Relationships = () => {
     const model = useLogSkeleton()
 
-    const [activeRelationships, setActiveRelationships] = useState(relationships)
-
     const handleRelationshipToggle = (item, include) => {
-        if (include && !activeRelationships.includes(item)) {
-            // If include is toggled and the item is not included
-            // Add the item to the list
-            setActiveRelationships(activeRelationships.concat([item]))
-        } else if (!include && activeRelationships.includes(item)) {
-            // If not include is toggled and the item is included
-            setActiveRelationships(activeRelationships.filter(val => val != item))
+
+        var res = model.activeRelationships
+        if (include && !res.includes(item)) {
+            model.setActiveRelationships(model.activeRelationships.concat([item]))
+        }else if(!include && res.includes(item)) {
+            model.setActiveRelationships(model.activeRelationships.filter(rel => rel != item))
         }
     }
-
-    useEffect(() => {
-        // Filter based on the activities
-        const filtered = filterRelationships(model.logSkeleton.logSkeleton, activeRelationships)
-
-        model.setFilteredLogSkeleton(filtered)
-    }, [activeRelationships])
-
 
     return (
         <div className={styles.container}>
