@@ -9,3 +9,4 @@ deploy.sh
 
 # Python stuff
 *.pyc
+__pycache__/

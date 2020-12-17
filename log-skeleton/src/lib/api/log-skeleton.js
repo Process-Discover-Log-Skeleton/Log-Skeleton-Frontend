@@ -68,7 +68,7 @@ const useProvideLogSkeleton = () => {
     // Update the log skeleton model
     useEffect(() => {
         // Fetch log skeleton in case a new id was set.
-        if (!modelIsLoaded()) {
+        if (hasEventLog() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
         }
     }, [logSkeleton])
@@ -157,6 +157,8 @@ const useProvideLogSkeleton = () => {
             })
             return
         }
+
+        console.log('Fetching log skeleton')
 
         try {
             let forbidden = ''

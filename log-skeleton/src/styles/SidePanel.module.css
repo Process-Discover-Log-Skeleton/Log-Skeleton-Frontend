@@ -5,7 +5,21 @@
     /* max-height: 50%; */
     /* padding-bottom: 1rem; */
     border-bottom: 0.5px var(--border-color) solid;
-    overflow: scroll;
+    overflow: auto;
+}
+
+.container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+.container::-webkit-scrollbar-track {
+    background: inherit;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background-color: rgba(173, 173, 173, 0.541);  
+    border-radius: 20px;
+    border: none;
 }
 
 .contentContainer {
@@ -33,7 +47,8 @@
     border-radius: 15px;
     border: none;
     transition: background-color 400ms ease-out;
-    /* transition: color 300ms ease-out; */
+    margin: 4px;
+    outline: none;
 }
 
 .activityButton {
@@ -54,4 +69,13 @@
 .disabledButton {
     background-color: rgb(238, 238, 238);
     color: rgb(112, 112, 112);
+}
+
+.smallButton {
+    font-size: 0.65rem;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
 }
