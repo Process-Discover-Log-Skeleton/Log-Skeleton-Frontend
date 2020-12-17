@@ -1,0 +1,12 @@
+# Build outputs
+build/
+
+# Deployment scripts
+deploy.sh
+
+# Mac os related stuff
+.DS_Store
+
+# Python stuff
+*.pyc
+__pycache__/
