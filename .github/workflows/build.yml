@@ -24,7 +24,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd log-skeleton
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - run: |
+        cd log-skeleton
+        npm ci
+    - run: |
+        cd log-skeleton
+        npm run build --if-present
+    - run: |
+        cd log-skeleton
+        npm test
