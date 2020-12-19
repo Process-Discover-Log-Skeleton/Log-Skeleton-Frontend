@@ -5,6 +5,8 @@ import { ReactComponent as LogSkeletonIcon } from '../assets/menu.svg'
 import { ReactComponent as BellIcon } from '../assets/bell.svg'
 import { ReactComponent as CheckmarkIcon } from '../assets/checkmark.svg'
 import { ReactComponent as ErrorIcon } from '../assets/errorCross.svg'
+import { ReactComponent as AddIcon } from '../assets/add.svg'
+import { ReactComponent as RestoreIcon } from '../assets/restore.svg'
 
 const NavigationBar = () => {
     const logSkeleton = useLogSkeleton()
@@ -70,7 +72,10 @@ const NavigationBar = () => {
                         <DropDownItem>
                             <input type="file" ref={filePicker} style={{ display: "none" }} onChange={onLoad} />
                             <div onClick={handleNewEventLog} id="itemNew">
-                                ✨ New event log
+                            {/* <span> */}
+                                 <AddIcon className={styles.checkmark} /> 
+                                 {/* </span> */}
+                                New event log
                             </div>
                         </DropDownItem>
                         <DropDownItem>
@@ -81,7 +86,8 @@ const NavigationBar = () => {
                         </DropDownItem>
                         <DropDownItem>
                             <div id="itemReset" onClick={resetLogSkeleton}>
-                                🔄 Reset
+                                <RestoreIcon className={styles.checkmark}/>
+                                Reset
                             </div>
                         </DropDownItem>
                     </DropDown>
@@ -156,7 +162,7 @@ const LogSkeletonStatus = () => {
         return (
             <NavItem icon={<>
                 <CheckmarkIcon className={styles.checkmark} />
-                {model.logSkeleton.file}
+                {model.config.file}
             </>}>
                 <DropDown>
                     <DropDownTitle>
