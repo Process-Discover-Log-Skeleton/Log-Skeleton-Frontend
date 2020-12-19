@@ -89,7 +89,7 @@ const useProvideLogSkeleton = () => {
             fetchLogSkeleton()
         }
         // eslint-disable-next-line
-    }, [config, fetchLogSkeleton, hasEventLog])
+    }, [config])
 
     // Refilter the filteredLogSkeleton
     // as soon as any active items changed.
