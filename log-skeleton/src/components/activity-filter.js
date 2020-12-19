@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton';
 import styles from "../styles/SidePanel.module.css";
 
@@ -14,7 +14,7 @@ export const ForbiddenActivities = () => {
         if (include && !res.includes(item)) {
             model.setForbiddenActivities(model.forbiddenActivities.concat([item]))
         }else if(!include && res.includes(item)) {
-            model.setForbiddenActivities(model.forbiddenActivities.filter(rel => rel != item))
+            model.setForbiddenActivities(model.forbiddenActivities.filter(rel => rel !== item))
         }
     }
 
@@ -39,7 +39,7 @@ export const RequiredActivities = () => {
         if (include && !res.includes(item)) {
             model.setRequiredActivities(model.requiredActivities.concat([item]))
         }else if(!include && res.includes(item)) {
-            model.setRequiredActivities(model.requiredActivities.filter(rel => rel != item))
+            model.setRequiredActivities(model.requiredActivities.filter(rel => rel !== item))
         }
     }
 
@@ -79,7 +79,7 @@ const ListItem = ({title, callback, colorClass}) =>{
 
     useEffect(() => {
         callback(title, toggle)
-    }, [toggle])
+    }, [toggle, title, callback])
 
     return(
         <button 

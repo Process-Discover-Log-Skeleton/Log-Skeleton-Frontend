@@ -100,7 +100,6 @@ const NavigationBar = () => {
 const NavItem = (props) => {
     const [open, setOpen] = useState()
     const item = useRef(null)
-    const dropDown = useRef(null)
 
     const closeMenu = (event) => {
 
@@ -119,7 +118,7 @@ const NavItem = (props) => {
 
     return (
         <li className={styles.navItem} ref={item}>
-            <a href="#" className={styles.navButton} onClick={() => setOpen(!open)}>
+            <a href="/" className={styles.navButton} onClick={() => setOpen(!open)}>
                 {props.icon}
             </a>
 
@@ -140,7 +139,7 @@ const DropDown = (props) => {
 
 const DropDownItem = (props) => {
     return (
-        <a href="#" className={styles.menuItem}>
+        <a href="/" className={styles.menuItem}>
             {props.children}
         </a>
     );
@@ -148,7 +147,7 @@ const DropDownItem = (props) => {
 
 const DropDownTitle = (props) => {
     return (
-        <a href="#" className={styles.menuTitle}>
+        <a href="/" className={styles.menuTitle}>
             {props.children}
         </a>
     );

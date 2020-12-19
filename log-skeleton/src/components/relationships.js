@@ -20,7 +20,7 @@ const Relationships = () => {
         if (include && !res.includes(item)) {
             model.setActiveRelationships(model.activeRelationships.concat([item]))
         }else if(!include && res.includes(item)) {
-            model.setActiveRelationships(model.activeRelationships.filter(rel => rel != item))
+            model.setActiveRelationships(model.activeRelationships.filter(rel => rel !== item))
         }
     }
 
@@ -32,7 +32,7 @@ const Relationships = () => {
                     relationships.map(relationship => {
                         return (
                             <RelationshipsBox
-                                initial={relationship == 'always_after' || relationship == 'always_before'}
+                                initial={relationship === 'always_after' || relationship === 'always_before'}
                                 title={relationship}
                                 callback={handleRelationshipToggle} />
                         )
@@ -53,7 +53,7 @@ const RelationshipsBox = ({ initial, title, callback }) => {
 
     useEffect(() => {
         callback(title, toggle)
-    }, [toggle])
+    }, [toggle, title, callback])
 
     return (
         <button

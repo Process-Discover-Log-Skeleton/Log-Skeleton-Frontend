@@ -1,9 +1,7 @@
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import { ReactComponent as LogSkeletonIcon } from '../assets/logSkeleton.svg'
 import styles from '../styles/MainPanel.module.css'
-import { useEffect, useRef } from 'react'
-import { filterActivities } from '../lib/logic/activities'
-import { filterRelationships } from '../lib/logic/relationships'
+import { useRef } from 'react'
 
 const MainPanel = () => {
     const logSkeleton = useLogSkeleton()

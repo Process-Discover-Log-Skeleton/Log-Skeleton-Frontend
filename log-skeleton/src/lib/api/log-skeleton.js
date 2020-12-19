@@ -79,6 +79,7 @@ const useProvideLogSkeleton = () => {
         const filtered = filterLogSkelton(logSkeleton.logSkeleton)
 
         setFilteredLogSkeleton(filtered)
+        // eslint-disable-next-line
     }, [logSkeleton])
 
     // Fetch as soon as something changes in the config
@@ -87,7 +88,8 @@ const useProvideLogSkeleton = () => {
         if (hasEventLog() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
         }
-    }, [config])
+        // eslint-disable-next-line
+    }, [config, fetchLogSkeleton, hasEventLog])
 
     // Refilter the filteredLogSkeleton
     // as soon as any active items changed.
@@ -100,6 +102,7 @@ const useProvideLogSkeleton = () => {
         const filtered = filterLogSkelton(logSkeleton.logSkeleton)
 
         setFilteredLogSkeleton(filtered)
+        // eslint-disable-next-line
     }, [activeActivities, activeRelationships])
 
     // Refetch the log skeleton as soons as the forbidden/ required activties change.
@@ -110,7 +113,7 @@ const useProvideLogSkeleton = () => {
         }
 
         fetchLogSkeleton()
-
+        // eslint-disable-next-line
     }, [forbiddenActivities, requiredActivities])
 
     // Api event-log registration
@@ -285,7 +288,7 @@ const useProvideLogSkeleton = () => {
     }
 
     const hasEventLog = () => {
-        return config.id != null
+        return config.id !== null
     }
 
     const modelIsLoaded = () => {
@@ -293,7 +296,7 @@ const useProvideLogSkeleton = () => {
     }
 
     const ok = () => {
-        return config.status == 'ok'
+        return config.status === 'ok'
     }
 
     const hasErrors = () => {

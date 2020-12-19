@@ -14,7 +14,7 @@ const Activities = () => {
             model.setActiveActivities(model.activeActivities.concat([item]))
         }else if (!include && model.activeActivities.includes(item)) {
         // If not include is toggled and the item is included
-            model.setActiveActivities(model.activeActivities.filter(val => val != item))
+            model.setActiveActivities(model.activeActivities.filter(val => val !== item))
         }
     }
 
@@ -46,7 +46,7 @@ const ActivityBox = ({title, callback}) => {
 
     useEffect(() => {
         callback(title, toggle)
-    }, [toggle])
+    }, [toggle, title, callback])
 
     return (
         <button 
