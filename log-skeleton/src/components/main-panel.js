@@ -60,7 +60,7 @@ const LogSkeletonPanel = () => {
 
     return (
         <div className={styles.logSkeletonPanel}>
-            <pre>{JSON.stringify(model.logSkeleton.filteredLogSkeleton, null, 2)}</pre>
+            <pre>{JSON.stringify(model.filteredLogSkeleton, null, 2)}</pre>
         </div>
     );
 }

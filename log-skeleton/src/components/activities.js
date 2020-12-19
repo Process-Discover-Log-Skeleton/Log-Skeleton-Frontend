@@ -5,7 +5,7 @@ import styles from '../styles/SidePanel.module.css'
 const Activities = () => {
     const model = useLogSkeleton()
 
-    const activities = model.logSkeleton.logSkeleton.activities
+    const activities = model.logSkeleton.activities
 
     const handleActivityToggle = (item, include) => {
         if (include && !model.activeActivities.includes(item)) {
