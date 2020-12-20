@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from '../styles/SidePanel.module.css'
 
