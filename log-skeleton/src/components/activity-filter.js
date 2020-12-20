@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton';
 import styles from "../styles/SidePanel.module.css";
 
@@ -14,7 +14,7 @@ export const ForbiddenActivities = () => {
         if (include && !res.includes(item)) {
             model.setForbiddenActivities(model.forbiddenActivities.concat([item]))
         }else if(!include && res.includes(item)) {
-            model.setForbiddenActivities(model.forbiddenActivities.filter(rel => rel != item))
+            model.setForbiddenActivities(model.forbiddenActivities.filter(rel => rel !== item))
         }
     }
 
@@ -23,7 +23,8 @@ export const ForbiddenActivities = () => {
             title={'Forbidden Activities'}
             callback={handleForbiddenActivity}
             source={activities}
-            colorClass={styles.redButton}>    
+            colorClass={styles.redButton}
+            includes={item => model.forbiddenActivities.includes(item)}>    
         </ActivityFilter>
     );
 }
@@ -39,7 +40,7 @@ export const RequiredActivities = () => {
         if (include && !res.includes(item)) {
             model.setRequiredActivities(model.requiredActivities.concat([item]))
         }else if(!include && res.includes(item)) {
-            model.setRequiredActivities(model.requiredActivities.filter(rel => rel != item))
+            model.setRequiredActivities(model.requiredActivities.filter(rel => rel !== item))
         }
     }
 
@@ -48,7 +49,8 @@ export const RequiredActivities = () => {
             title={'Required Activities'} 
             callback={handleRequiredActivity}
             source={activities}
-            colorClass={styles.greenButton}>    
+            colorClass={styles.greenButton}
+            includes={item => model.requiredActivities.includes(item)}>    
         </ActivityFilter>
     );
 }
@@ -64,7 +66,8 @@ const ActivityFilter = (props) =>{
                         <ListItem 
                             title={item}
                             callback={props.callback}
-                            colorClass={props.colorClass}>
+                            colorClass={props.colorClass}
+                            toggle={props.includes(item)}>
                         </ListItem>
                     )
                 })}
@@ -74,19 +77,16 @@ const ActivityFilter = (props) =>{
     );
 }
 
-const ListItem = ({title, callback, colorClass}) =>{
-    const [toggle, setToggle] = useState(false);
+const ListItem = ({title, callback, toggle, colorClass}) =>{
 
-    useEffect(() => {
-        callback(title, toggle)
-    }, [toggle])
+    const handleToggle = (event) => {
+        callback(title, !toggle)
+    }
 
     return(
         <button 
             className={[styles.buttonStyle, toggle ? colorClass : styles.disabledButton].join(' ')}
-            onClick={ ()=>{
-                setToggle(!toggle)
-            }}>
+            onClick={handleToggle}>
                 {title}
         </button>
     );

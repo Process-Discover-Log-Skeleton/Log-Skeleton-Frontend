@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton';
 import styles from '../styles/SidePanel.module.css'
 
 const Activities = () => {
     const model = useLogSkeleton()
 
-    const activities = model.logSkeleton.logSkeleton.activities
+    const activities = model.logSkeleton.activities
 
     const handleActivityToggle = (item, include) => {
         if (include && !model.activeActivities.includes(item)) {
@@ -14,7 +14,7 @@ const Activities = () => {
             model.setActiveActivities(model.activeActivities.concat([item]))
         }else if (!include && model.activeActivities.includes(item)) {
         // If not include is toggled and the item is included
-            model.setActiveActivities(model.activeActivities.filter(val => val != item))
+            model.setActiveActivities(model.activeActivities.filter(val => val !== item))
         }
     }
 
@@ -27,7 +27,8 @@ const Activities = () => {
                         return (
                             <ActivityBox 
                                 title={activity}
-                                callback={handleActivityToggle}/>
+                                callback={handleActivityToggle}
+                                toggle={model.activeActivities.includes(activity)}/>
                         )
                     })
                 }
@@ -36,17 +37,12 @@ const Activities = () => {
     )
 }
 
-const ActivityBox = ({title, callback}) => {
-    const [toggle, setToggle] = useState(true)
+const ActivityBox = ({title, callback, toggle}) => {
 
     const handleToggle = (event) => {
-        setToggle(!toggle)
+        callback(title, !toggle)
         console.log('toggle');
     }
-
-    useEffect(() => {
-        callback(title, toggle)
-    }, [toggle])
 
     return (
         <button 

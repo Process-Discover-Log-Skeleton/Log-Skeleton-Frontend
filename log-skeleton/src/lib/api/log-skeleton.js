@@ -14,7 +14,7 @@ const relationships = [
 // Context for the log skeleton data
 const LogSkeleton = createContext()
 
-const defaultLS = {
+const defaultConfig = {
     // ID of the event log in the backend
     id: null,
     // File name
@@ -23,11 +23,14 @@ const defaultLS = {
     status: null,
     // Potential errors from the backend
     errors: null,
+    // Parameters of the LS model
+    parameters: null
+}
+
+const defaultLS = {
     activities: null,
     // Original log-skeleton model from the backend
-    logSkeleton: null,
-    // Filtered version of the log-skeleton model
-    filteredLogSkeleton: null
+    logSkeleton: null
 }
 
 export const LogSkeletonProvider = ({ children }) => {
@@ -45,7 +48,9 @@ export const useLogSkeleton = () => {
 }
 
 const useProvideLogSkeleton = () => {
+    const [config, setConfig] = useState(defaultConfig)
     const [logSkeleton, setLogSkeleton] = useState(defaultLS)
+    const [filteredLogSkeleton, setFilteredLogSkeleton] = useState(defaultLS)
     const [activeActivities, setActiveActivities] = useState([])
     const [activeRelationships, setActiveRelationships] = useState(relationships)
     const [forbiddenActivities, setForbiddenActivities] = useState([])
@@ -55,6 +60,10 @@ const useProvideLogSkeleton = () => {
 
 
     const filterLogSkelton = (log) => {
+        if (log == null){
+            return null
+        }
+
         // Filter based on the activities
         var filtered = filterActivities(log, activeActivities)
 
@@ -65,29 +74,46 @@ const useProvideLogSkeleton = () => {
         return filtered
     }
 
-    // Update the log skeleton model
+    // Filter the logSkeleton as soon as it changes
+    useEffect(() => {
+        const filtered = filterLogSkelton(logSkeleton.logSkeleton)
+
+        setFilteredLogSkeleton(filtered)
+        // eslint-disable-next-line
+    }, [logSkeleton])
+
+    // Fetch as soon as something changes in the config
     useEffect(() => {
         // Fetch log skeleton in case a new id was set.
         if (hasEventLog() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
         }
-    }, [logSkeleton])
+        // eslint-disable-next-line
+    }, [config])
 
+    // Refilter the filteredLogSkeleton
+    // as soon as any active items changed.
     useEffect(() => {
+        // In case there is no event log
         if (!modelIsLoaded()) {
             return
         }
 
-        setFilteredLogSkeleton(filterLogSkelton(logSkeleton.logSkeleton))
+        const filtered = filterLogSkelton(logSkeleton.logSkeleton)
+
+        setFilteredLogSkeleton(filtered)
+        // eslint-disable-next-line
     }, [activeActivities, activeRelationships])
 
+    // Refetch the log skeleton as soons as the forbidden/ required activties change.
     useEffect(() => {
+        // In case there is no log id -> return
         if (!modelIsLoaded()) {
             return
         }
 
         fetchLogSkeleton()
-
+        // eslint-disable-next-line
     }, [forbiddenActivities, requiredActivities])
 
     // Api event-log registration
@@ -106,7 +132,7 @@ const useProvideLogSkeleton = () => {
             // In case of any errors
             addToast(e.message, {
                 appearance: 'error',
-                autoDismiss: true,
+                autoDismiss: false,
             })
             return
         }
@@ -114,15 +140,26 @@ const useProvideLogSkeleton = () => {
         if (response.ok) { // Response is okay
             const {id, activities} = await response.json()
 
+            // Set original log skeleton
             setLogSkeleton({
                 ...defaultLS,
+                activities: activities
+            })
+            
+            // Set config
+            setConfig({
                 id: id,
-                activities: activities,
                 file: file.name,
                 status: 'ok'
             })
+
+            setFilteredLogSkeleton({
+                ...defaultLS,
+                activities: activities
+            })
+
             setActiveActivities(activities)
-            console.log(file.name)
+
             addToast('Registered event-log.', {
                 appearance: 'success',
                 autoDismiss: true,
@@ -131,23 +168,25 @@ const useProvideLogSkeleton = () => {
         } else { // Something is wrong
             const err = await response.json()
 
-            setLogSkeleton({
-                ...defaultLS,
+            setConfig({
+                ...config,
                 file: file.name,
                 status: 'failure',
                 errors: err.error
             })
 
+            setLogSkeleton(defaultLS)
+
             addToast(err.error, {
                 appearance: 'error',
-                autoDismiss: true,
+                autoDismiss: false,
             })
         }
     }
 
     // Log Skeleton model fetching
     const fetchLogSkeleton = async () => {
-        let id = logSkeleton.id
+        let id = config.id
 
         // There is no id
         if (id == null) {
@@ -185,31 +224,43 @@ const useProvideLogSkeleton = () => {
             // In case of any errors
             addToast(e.message, {
                 appearance: 'error',
-                autoDismiss: true,
+                autoDismiss: false,
             })
             return
         }
 
         if (res.ok) { // Response is okay
-            const data = await res.json()
-            console.log(data);
-            // if (!modelIsLoaded()) {
+            const { activities, parameters, model } = await res.json()
+            console.log(activities);
+            console.log(model);
+            console.log(parameters);
+
+            // Something must be wrong
+            // -> Just for safety since setting the logSkeleton with an null object 
+            //    after the API call would cause an infite API call loop.
+            if (model == null) {
+                failure(['Something is wrong!'])
+                return
+            }
+
             setLogSkeleton({
-                ...logSkeleton,
-                logSkeleton: data,
-                filteredLogSkeleton: filterLogSkelton(data),
+                activities: activities,
+                logSkeleton: model
+            })
+
+            setConfig({
+                ...config,
+                parameters: parameters,
                 status: 'ok'
             })
 
-            setActiveActivities(data.activities)
+            setActiveActivities(activities)
         } else { // Something is wrong
             const err = await res.json()
 
-            setLogSkeleton({
-                ...defaultLS,
-                status: 'failure',
-                errors: err.error
-            })
+            failure([err.error])
+
+            setLogSkeleton(null)
 
             addToast(err.error, {
                 appearance: 'error',
@@ -218,12 +269,26 @@ const useProvideLogSkeleton = () => {
         }
     }
 
+    const failure = (errors) => {
+        setConfig({
+            ...config,
+            status: 'failure',
+            errors: errors
+        })
+    }
+
     const clear = () => {
+        setConfig(defaultConfig)
         setLogSkeleton(defaultLS)
+        setFilteredLogSkeleton(defaultConfig)
+        setActiveActivities([])
+        setActiveRelationships(relationships)
+        setForbiddenActivities([])
+        setRequiredActivities([])
     }
 
     const hasEventLog = () => {
-        return logSkeleton.id != null
+        return config.id !== null
     }
 
     const modelIsLoaded = () => {
@@ -231,29 +296,24 @@ const useProvideLogSkeleton = () => {
     }
 
     const ok = () => {
-        return logSkeleton.status == 'ok'
+        return config.status === 'ok'
     }
 
     const hasErrors = () => {
-        return !ok() && logSkeleton.errors != null
-    }
-
-    const setFilteredLogSkeleton = (filteredLogSkeleton) => {
-        setLogSkeleton({
-            ...logSkeleton,
-            filteredLogSkeleton: filteredLogSkeleton
-        })
+        return !ok() && config.errors != null
     }
 
     const resetFilteredLogSkeleton = () => {
-        setLogSkeleton({
-            ...logSkeleton,
-            filteredLogSkeleton: logSkeleton.logSkeleton
-        })
+        setActiveActivities(logSkeleton.activities)
+        setActiveRelationships(relationships)
+        setForbiddenActivities([])
+        setRequiredActivities([])
     }
 
     return {
         logSkeleton, // The model object
+        filteredLogSkeleton,
+        config,
         activeActivities,
         activeRelationships,
         forbiddenActivities,

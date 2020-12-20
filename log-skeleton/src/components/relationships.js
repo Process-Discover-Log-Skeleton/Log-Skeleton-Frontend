@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from '../styles/SidePanel.module.css'
 
@@ -20,7 +20,7 @@ const Relationships = () => {
         if (include && !res.includes(item)) {
             model.setActiveRelationships(model.activeRelationships.concat([item]))
         }else if(!include && res.includes(item)) {
-            model.setActiveRelationships(model.activeRelationships.filter(rel => rel != item))
+            model.setActiveRelationships(model.activeRelationships.filter(rel => rel !== item))
         }
     }
 
@@ -32,9 +32,9 @@ const Relationships = () => {
                     relationships.map(relationship => {
                         return (
                             <RelationshipsBox
-                                initial={relationship == 'always_after' || relationship == 'always_before'}
                                 title={relationship}
-                                callback={handleRelationshipToggle} />
+                                callback={handleRelationshipToggle}
+                                toggle={model.activeRelationships.includes(relationship)}/>
                         )
                     })
                 }
@@ -44,16 +44,12 @@ const Relationships = () => {
 }
 
 
-const RelationshipsBox = ({ initial, title, callback }) => {
-    const [toggle, setToggle] = useState(initial)
+const RelationshipsBox = ({ title, callback, toggle }) => {
 
     const handleToggle = (event) => {
-        setToggle(!toggle)
+        console.log(title);
+        callback(title, !toggle)
     }
-
-    useEffect(() => {
-        callback(title, toggle)
-    }, [toggle])
 
     return (
         <button
