@@ -32,9 +32,9 @@ const Relationships = () => {
                     relationships.map(relationship => {
                         return (
                             <RelationshipsBox
-                                initial={relationship === 'always_after' || relationship === 'always_before'}
                                 title={relationship}
-                                callback={handleRelationshipToggle} />
+                                callback={handleRelationshipToggle}
+                                toggle={model.activeRelationships.includes(relationship)}/>
                         )
                     })
                 }
@@ -44,16 +44,12 @@ const Relationships = () => {
 }
 
 
-const RelationshipsBox = ({ initial, title, callback }) => {
-    const [toggle, setToggle] = useState(initial)
+const RelationshipsBox = ({ title, callback, toggle }) => {
 
     const handleToggle = (event) => {
-        setToggle(!toggle)
+        console.log(title);
+        callback(title, !toggle)
     }
-
-    useEffect(() => {
-        callback(title, toggle)
-    }, [toggle, title, callback])
 
     return (
         <button

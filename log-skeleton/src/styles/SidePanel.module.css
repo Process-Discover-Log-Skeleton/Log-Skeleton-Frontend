@@ -47,8 +47,13 @@
     border-radius: 15px;
     border: none;
     transition: background-color 400ms ease-out;
+    transition: filter 200ms;
     margin: 4px;
     outline: none;
+}
+
+.buttonStyle:hover {
+    filter: brightness(1.025)
 }
 
 .activityButton {

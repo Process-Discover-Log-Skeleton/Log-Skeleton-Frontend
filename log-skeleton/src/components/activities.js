@@ -27,7 +27,8 @@ const Activities = () => {
                         return (
                             <ActivityBox 
                                 title={activity}
-                                callback={handleActivityToggle}/>
+                                callback={handleActivityToggle}
+                                toggle={model.activeActivities.includes(activity)}/>
                         )
                     })
                 }
@@ -36,17 +37,12 @@ const Activities = () => {
     )
 }
 
-const ActivityBox = ({title, callback}) => {
-    const [toggle, setToggle] = useState(true)
+const ActivityBox = ({title, callback, toggle}) => {
 
     const handleToggle = (event) => {
-        setToggle(!toggle)
+        callback(title, !toggle)
         console.log('toggle');
     }
-
-    useEffect(() => {
-        callback(title, toggle)
-    }, [toggle, title, callback])
 
     return (
         <button 

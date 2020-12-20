@@ -118,9 +118,9 @@ const NavItem = (props) => {
 
     return (
         <li className={styles.navItem} ref={item}>
-            <a href="/" className={styles.navButton} onClick={() => setOpen(!open)}>
+            <div className={styles.navButton} onClick={() => setOpen(!open)}>
                 {props.icon}
-            </a>
+            </div>
 
             {open && props.children}
         </li>
@@ -139,17 +139,17 @@ const DropDown = (props) => {
 
 const DropDownItem = (props) => {
     return (
-        <a href="/" className={styles.menuItem}>
+        <div className={styles.menuItem}>
             {props.children}
-        </a>
+        </div>
     );
 }
 
 const DropDownTitle = (props) => {
     return (
-        <a href="/" className={styles.menuTitle}>
+        <div className={styles.menuTitle}>
             {props.children}
-        </a>
+        </div>
     );
 }
 

@@ -303,15 +303,11 @@ const useProvideLogSkeleton = () => {
         return !ok() && config.errors != null
     }
 
-    // const setFilteredLogSkeleton = (filteredLogSkeleton) => {
-    //     setLogSkeleton({
-    //         ...logSkeleton,
-    //         filteredLogSkeleton: filteredLogSkeleton
-    //     })
-    // }
-
     const resetFilteredLogSkeleton = () => {
-        setFilteredLogSkeleton(logSkeleton)
+        setActiveActivities(logSkeleton.activities)
+        setActiveRelationships(relationships)
+        setForbiddenActivities([])
+        setRequiredActivities([])
     }
 
     return {
