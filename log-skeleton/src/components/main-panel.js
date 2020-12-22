@@ -2,6 +2,7 @@ import { useLogSkeleton } from '../lib/api/log-skeleton'
 import { ReactComponent as LogSkeletonIcon } from '../assets/logSkeleton.svg'
 import styles from '../styles/MainPanel.module.css'
 import { useRef } from 'react'
+import GraphVisualizer from './graph-visualisation'
 
 const MainPanel = () => {
     const logSkeleton = useLogSkeleton()
@@ -16,6 +17,7 @@ const MainPanel = () => {
 
     return (
         <div className={styles.mainPanel}>
+            <GraphVisualizer></GraphVisualizer>
             <LogSkeletonPanel></LogSkeletonPanel>
         </div>
     );
