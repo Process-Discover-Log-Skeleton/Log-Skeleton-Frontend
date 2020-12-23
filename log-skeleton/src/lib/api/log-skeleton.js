@@ -71,7 +71,10 @@ const useProvideLogSkeleton = () => {
         // Filter based on the activities
         filtered = filterRelationships(filtered, activeRelationships)
 
-        return filtered
+        return {
+            logSkeleton: filtered,
+            activities: activeActivities
+        }
     }
 
     // Filter the logSkeleton as soon as it changes
@@ -320,7 +323,7 @@ const useProvideLogSkeleton = () => {
         requiredActivities,
         setActiveActivities,
         setActiveRelationships,
-        setFilteredLogSkeleton, // Sets the filtered log skeleton
+        // setFilteredLogSkeleton, // Sets the filtered log skeleton
         registerEventLog, // Registers a new event log
         resetFilteredLogSkeleton, // Resets the filtered log to the original state
         fetchLogSkeleton, // Fetches the log skeleton model from the api

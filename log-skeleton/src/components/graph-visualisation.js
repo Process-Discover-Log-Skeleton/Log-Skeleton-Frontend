@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import * as d3 from 'd3'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import '../styles/Graph.css'
-import { runForceGraph } from '../lib/common/grah-visualizer'
+import { runForceGraph } from '../lib/common/graph-visualizer'
+import { graphConverter } from '../lib/common/model-converter'
 
 
 const GraphVisualizer = () => {
@@ -15,45 +16,30 @@ const GraphVisualizer = () => {
         return `<div>${node.name}</div>`;
       }, []);
 
-    var graph = {
-        nodes: [
-            {
-                id: 0,
-                name: 'r r'
-            },{
-                id: 1,
-                name: 'a2'
-            },{
-                id: 2,
-                name: 'a3'
-            },
-        ],
-        edges: [
-            {
-                source: 0,
-                target: 1
-            },
-            {
-                source: 1,
-                target: 2
-            }
-        ]
-    }
 
     useEffect(() => {
-        let destroyFn;
+        if (model.filteredLogSkeleton === null || model.filteredLogSkeleton.logSkeleton === null) {
+            return
+        }
+
+        console.log(model.filteredLogSkeleton);
+
+        let destroyFn
+
+        let graph = graphConverter(model.filteredLogSkeleton.logSkeleton, model.filteredLogSkeleton.activities)
 
         if (node.current) {
-          const { destroy } = runForceGraph(node.current, graph.nodes, graph.edges, nodeHoverTooltip);
-          destroyFn = destroy;
+          const { destroy } = runForceGraph(node.current, graph.nodes, graph.edges, nodeHoverTooltip)
+          destroyFn = destroy
         }
     
-        return destroyFn;
-      }, []);
+        return destroyFn
+      }, [model.filteredLogSkeleton])
 
     return (
         <div ref={node}
              className='container'>
+                 <svg></svg>
         </div>
     )
 }

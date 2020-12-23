@@ -1,19 +1,21 @@
 .container {
   width: 100%;
-  height: 80vh;
+  height: 100%;
   position: relative;
+  z-index: 0;
   background-color:  rgb(244, 246, 248);
 }
 
 .container svg {
-  display: block;
+  /* display: block; */
   width: 100%;
   height: 100%;
 }
 
 .labels {
     font-size: 12px;
-    fill: white;
+    font-weight: 600;
+    /* fill: white; */
 }
 
 .node text {
