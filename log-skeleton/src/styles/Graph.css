@@ -18,6 +18,21 @@
     /* fill: white; */
 }
 
+.link {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.node {
+stroke-width: 1.5px;
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 10px;
+  fill: #000000;
+}
+
 .node text {
     font: 12px sans-serif;
     fill: white;

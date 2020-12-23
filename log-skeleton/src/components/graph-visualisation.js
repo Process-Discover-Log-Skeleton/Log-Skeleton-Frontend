@@ -1,39 +1,47 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import '../styles/Graph.css'
 import { runForceGraph } from '../lib/common/graph-visualizer'
 import { graphConverter } from '../lib/common/model-converter'
 
+var updateGraph = (g) => {};
 
 const GraphVisualizer = () => {
     // Reference to the svg
     const node = useRef(null)
     const model = useLogSkeleton()
 
+    // var [updateGraph, setUpdateGraph] = useState(null);
+
     const nodeHoverTooltip = React.useCallback((node) => {
         console.log(node.name);
         return `<div>${node.name}</div>`;
       }, []);
 
+    useEffect(() => {
+        if (node.current != null) {
+            const update = runForceGraph(node.current)
+
+            updateGraph = update
+        }
+    }, [])
 
     useEffect(() => {
         if (model.filteredLogSkeleton === null || model.filteredLogSkeleton.logSkeleton === null) {
             return
         }
 
-        console.log(model.filteredLogSkeleton);
-
-        let destroyFn
-
-        let graph = graphConverter(model.filteredLogSkeleton.logSkeleton, model.filteredLogSkeleton.activities)
-
-        if (node.current) {
-          const { destroy } = runForceGraph(node.current, graph.nodes, graph.edges, nodeHoverTooltip)
-          destroyFn = destroy
+        if (updateGraph == null) {
+            return
         }
-    
-        return destroyFn
+        
+        let graph = graphConverter(model.filteredLogSkeleton.logSkeleton, model.filteredLogSkeleton.activities)
+        
+        console.log(graph);
+
+        updateGraph(graph)
+
       }, [model.filteredLogSkeleton])
 
     return (

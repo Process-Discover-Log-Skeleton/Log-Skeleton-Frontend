@@ -5,7 +5,7 @@ export const graphConverter = (logSkeleton, activities) => {
 
     let graph = {
         nodes: [],
-        edges: []
+        links: []
     }
 
     // Map the nodes to a graph-node
@@ -27,16 +27,19 @@ export const graphConverter = (logSkeleton, activities) => {
         console.log(closure);
 
         const ed = closure.map(item => {
+            const source = activities.indexOf(item[0])
+            const target = activities.indexOf(item[1])
             return {
-                source: activities.indexOf(item[0]),
-                target: activities.indexOf(item[1])
+                id: rel + '-' + source + '-' + target,
+                source: source,
+                target: target
             }
         })
 
         edges = edges.concat(ed)
     }
 
-    graph.edges = edges
+    graph.links = edges
 
     return graph
 }
