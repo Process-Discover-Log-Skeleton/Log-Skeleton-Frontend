@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import styles from '../../styles/Graph.css'
 
 //	graph data store
-var graph, link, node, svg, simulation, color;
+var graph, link, node, svg, simulation, color, radius;
 
 export const runForceGraph = (container) => {
 
@@ -12,6 +12,8 @@ export const runForceGraph = (container) => {
 
     //	svg and sizing
     svg = d3.select(container).select("svg")
+
+    radius = 10
 
     //	d3 color scheme
     color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -26,7 +28,9 @@ export const runForceGraph = (container) => {
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
             .strength(function (d) { return -500; }))
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .alphaDecay(0.06)
+        .velocityDecay(0.5)
 
     //	follow v4 general update pattern
     const update = (g) => {
@@ -59,7 +63,7 @@ export const runForceGraph = (container) => {
         // ENTER
         node = node.enter().append("circle")
             .attr("class", "node")
-            .attr("r", 10)
+            .attr("r", radius)
             // .attr("fill", function (d) { return color(d.group); })
             .call(d3.drag()
                 .on("start", dragstarted)
@@ -76,8 +80,10 @@ export const runForceGraph = (container) => {
         simulation.force("link")
             .links(graph.links);
 
-        simulation.alphaTarget(0.3).restart();
+        // Reset alpha to 1.0 and the target to 0.0
+        simulation.alpha(1.0).alphaTarget(0.0).restart();
     }
+
     //	drag event handlers
     function dragstarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -105,8 +111,10 @@ export const runForceGraph = (container) => {
             .attr("y2", function (d) { return d.target.y; });
 
         node
-            .attr("cx", function (d) { return d.x; })
-            .attr("cy", function (d) { return d.y; });
+            .attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+            .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+
+        console.log(simulation.alpha());
     }
 
     return update
