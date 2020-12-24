@@ -13,7 +13,7 @@ export const runForceGraph = (container) => {
     //	svg and sizing
     svg = d3.select(container).select("svg")
 
-    radius = 10
+    radius = 15
 
     //	d3 color scheme
     color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -27,10 +27,10 @@ export const runForceGraph = (container) => {
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -500; }))
+            .strength(function (d) { return -1000; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .alphaDecay(0.06)
-        .velocityDecay(0.5)
+        .alphaDecay(0.02)
+        .velocityDecay(0.8)
 
     //	follow v4 general update pattern
     const update = (g) => {
@@ -86,20 +86,32 @@ export const runForceGraph = (container) => {
 
     //	drag event handlers
     function dragstarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
+        // if (!event.active) simulation.alphaTarget(0.2).restart();
+        // d.x = d.x;
+        // d.y = d.y;
+        simulation.stop()
     }
 
     function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
+        d.x = event.x;
+        d.y = event.y;
+
+        link
+            .attr("x1", function (d) { return d.source.x; })
+            .attr("y1", function (d) { return d.source.y; })
+            .attr("x2", function (d) { return d.target.x; })
+            .attr("y2", function (d) { return d.target.y; });
+
+        node
+            .attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+            .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
     }
 
     function dragended(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
+        
+        // if (!event.active) simulation.alphaTarget(0);
+        // d.fx = null;
+        // d.fy = null;
     }
 
     //	tick event handler (nodes bound to container)
