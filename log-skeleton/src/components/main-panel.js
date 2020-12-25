@@ -18,7 +18,7 @@ const MainPanel = () => {
     return (
         <div className={styles.mainPanel}>
             <GraphVisualizer></GraphVisualizer>
-            <LogSkeletonPanel></LogSkeletonPanel>
+            {/* <LogSkeletonPanel></LogSkeletonPanel> */}
         </div>
     );
 }

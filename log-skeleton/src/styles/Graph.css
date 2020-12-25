@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
   position: relative;
+  overflow: scroll;
   z-index: 0;
   background-color:  rgb(244, 246, 248);
 }
@@ -10,21 +11,24 @@
   /* display: block; */
   width: 100%;
   height: 100%;
+  overflow: scroll;
 }
 
-.labels {
+.label {
     font-size: 12px;
     font-weight: 600;
-    /* fill: white; */
+    fill: black;
+    /* filter: drop-shadow( 3px 0px 10px rgb(255, 255, 255)); */
+    text-shadow: 0px 0px 10px rgb(156, 156, 156);
 }
 
 .link {
-    stroke: #000;
+    stroke: rgb(151, 151, 151);
     stroke-width: 1.5px;
 }
 
 .node {
-stroke-width: 1.5px;
+    stroke-width: 1.5px;
 }
 
 text {

@@ -25,7 +25,7 @@ const Content = () => {
             <div className={styles.sidePanel}>
                 <RequiredActivities></RequiredActivities>
                 <ForbiddenActivities></ForbiddenActivities>
-                <Splitter value={[[1,2],[3,4]]}/>
+                {/* <Splitter value={[[1,2],[3,4]]}/> */}
             </div>
 
             <div className={styles.midPanel}>

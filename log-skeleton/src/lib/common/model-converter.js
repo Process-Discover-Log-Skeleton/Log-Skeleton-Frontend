@@ -32,7 +32,8 @@ export const graphConverter = (logSkeleton, activities) => {
             return {
                 id: rel + '-' + source + '-' + target,
                 source: source,
-                target: target
+                target: target,
+                type: rel
             }
         })
 

@@ -1,8 +1,9 @@
 import * as d3 from 'd3'
+import { selectAll } from 'd3';
 import styles from '../../styles/Graph.css'
 
 //	graph data store
-var graph, link, node, svg, simulation, color, radius;
+var graph, link, node, circles, labels, svg, simulation, color, radius;
 
 export const runForceGraph = (container) => {
 
@@ -13,7 +14,7 @@ export const runForceGraph = (container) => {
     //	svg and sizing
     svg = d3.select(container).select("svg")
 
-    radius = 15
+    radius = 10
 
     //	d3 color scheme
     color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -22,19 +23,21 @@ export const runForceGraph = (container) => {
     link = svg.append("g").selectAll(".link")
     node = svg.append("g").selectAll(".node")
 
+    circles = svg.selectAll("circles")
+    labels = svg.selectAll("text")
+
     //	simulation initialization
     simulation = d3.forceSimulation()
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -1000; }))
+            .strength(function (d) { return -1200; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
         .velocityDecay(0.8)
 
     //	follow v4 general update pattern
     const update = (g) => {
-        console.log(graph)
         if (g === null) {
             return
         }
@@ -52,26 +55,50 @@ export const runForceGraph = (container) => {
         // Create new links as needed.	
         link = link.enter().append("line")
             .attr("class", "link")
-            .merge(link);
+            .merge(link)
+        
+        link.append("title").text(d => d.type)
 
         // DATA JOIN
-        node = node.data(graph.nodes);
+        node = node
+            .data(graph.nodes)
 
         // EXIT
         node.exit().remove();
 
+        circles.remove()
+        labels.remove()
+
         // ENTER
-        node = node.enter().append("circle")
-            .attr("class", "node")
-            .attr("r", radius)
-            // .attr("fill", function (d) { return color(d.group); })
+        node = node
+            .enter()
+            .append("g")
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended)
             )
-            .merge(node);
+            .merge(node)
 
+            
+        circles = node
+            .append("circle")
+            .merge(circles)
+            .attr("class", "node")
+            .attr("r", radius)
+            .attr("fill", function (d) { return color(d.id); })
+            
+        circles.exit().remove()
+
+        node.append("title")
+            .text(d => d.name)
+
+        labels = node.append("svg:text")
+            .text(d => d.name)
+            .attr("class", "label")
+            .attr("dy", radius + 10)
+            .attr("text-anchor", "middle")
+        
         //	Set nodes, links, and alpha target for simulation
         simulation
             .nodes(graph.nodes)
@@ -96,15 +123,7 @@ export const runForceGraph = (container) => {
         d.x = event.x;
         d.y = event.y;
 
-        link
-            .attr("x1", function (d) { return d.source.x; })
-            .attr("y1", function (d) { return d.source.y; })
-            .attr("x2", function (d) { return d.target.x; })
-            .attr("y2", function (d) { return d.target.y; });
-
-        node
-            .attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
-            .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+        ticked()
     }
 
     function dragended(event, d) {
@@ -122,11 +141,14 @@ export const runForceGraph = (container) => {
             .attr("x2", function (d) { return d.target.x; })
             .attr("y2", function (d) { return d.target.y; });
 
-        node
-            .attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
-            .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+        node.selectAll("circle")
+            .attr("cx", function(d) { return d.x = Math.max(radius * 1.5, Math.min(width - radius * 1.5, d.x)); })
+            .attr("cy", function(d) { return d.y = Math.max(radius * 2.5, Math.min(height - radius * 2.5, d.y)); });
 
-        console.log(simulation.alpha());
+        labels
+        .attr("x", function(d) { return d.x = Math.max(radius * 1.5, Math.min(width - radius * 1.5, d.x)); })
+        .attr("y", function(d) { return d.y = Math.max(radius * 2.5, Math.min(height - radius * 2.5, d.y)); });
+        
     }
 
     return update
