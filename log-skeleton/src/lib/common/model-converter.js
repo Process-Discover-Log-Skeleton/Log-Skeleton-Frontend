@@ -26,9 +26,15 @@ export const graphConverter = (logSkeleton, activities) => {
         const closure = transitiveClosure(logSkeleton[rel], activities)
         console.log(closure);
 
-        const ed = closure.map(item => {
+        const ed = closure.filter(item => {
             const source = activities.indexOf(item[0])
             const target = activities.indexOf(item[1])
+
+            return source != target
+        }).map(item => {
+            const source = activities.indexOf(item[0])
+            const target = activities.indexOf(item[1])
+
             return {
                 id: rel + '-' + source + '-' + target,
                 source: source,

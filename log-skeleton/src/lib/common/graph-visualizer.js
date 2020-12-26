@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import { selectAll } from 'd3';
 import styles from '../../styles/Graph.css'
+import { generateMarkers } from './d3-markers';
 
 //	graph data store
 var graph, link, node, circles, labels, svg, simulation, color, radius;
@@ -12,7 +13,15 @@ export const runForceGraph = (container) => {
     const height = containerRect.height
 
     //	svg and sizing
-    svg = d3.select(container).select("svg")
+    svg = d3
+        .select(container)
+        .select("svg")
+    svg.call(
+        d3.zoom().on("zoom", function (event) {
+            node.attr("transform", event.transform)
+            link.attr("transform", event.transform)
+        })
+    )
 
     radius = 10
 
@@ -26,15 +35,17 @@ export const runForceGraph = (container) => {
     circles = svg.selectAll("circles")
     labels = svg.selectAll("text")
 
+    generateMarkers(svg, radius)
+
     //	simulation initialization
     simulation = d3.forceSimulation()
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -1200; }))
+            .strength(function (d) { return -2500; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
-        .velocityDecay(0.8)
+        .velocityDecay(0.9)
 
     //	follow v4 general update pattern
     const update = (g) => {
@@ -53,8 +64,11 @@ export const runForceGraph = (container) => {
 
         // ENTER
         // Create new links as needed.	
-        link = link.enter().append("line")
+        link = link.enter()
+            .append("line")
             .attr("class", "link")
+            .attr("marker-start", "url(#circle-outline)")
+            .attr("marker-end", "url(#arrowend-outline)")
             .merge(link)
         
         link.append("title").text(d => d.type)
