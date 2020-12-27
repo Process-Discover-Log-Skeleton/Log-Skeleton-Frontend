@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton';
+import { trimString } from '../lib/common/trim-strings';
 import styles from '../styles/SidePanel.module.css'
 
 const Activities = () => {
@@ -48,7 +49,7 @@ const ActivityBox = ({title, callback, toggle}) => {
         <button 
         className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
         onClick={handleToggle}>
-            {title}
+            {trimString(title)}
         </button>
     )
 }

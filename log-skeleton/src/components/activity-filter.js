@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton';
+import { trimString } from '../lib/common/trim-strings';
 import styles from "../styles/SidePanel.module.css";
 
 
@@ -87,7 +88,7 @@ const ListItem = ({title, callback, toggle, colorClass}) =>{
         <button 
             className={[styles.buttonStyle, toggle ? colorClass : styles.disabledButton].join(' ')}
             onClick={handleToggle}>
-                {title}
+                {trimString(title)}
         </button>
     );
 
