@@ -217,7 +217,7 @@ const useProvideLogSkeleton = () => {
                 }, '')
             }
 
-            let extension = 'extended-trace=0&'
+            let extension = 'extended-trace=1&'
 
             // Request the Log skeleton model from the backend
             var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}`, {

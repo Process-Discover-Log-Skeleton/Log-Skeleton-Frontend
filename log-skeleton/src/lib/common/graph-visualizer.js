@@ -4,7 +4,16 @@ import styles from '../../styles/Graph.css'
 import { generateMarkers } from './d3-markers';
 
 //	graph data store
-var graph, link, node, circles, labels, svg, simulation, color, radius;
+var graph,
+    link,
+    node,
+    circles,
+    labels,
+    svg,
+    simulation,
+    color,
+    radius,
+    zoom = d3.zoomIdentity;
 
 export const runForceGraph = (container) => {
 
@@ -16,14 +25,16 @@ export const runForceGraph = (container) => {
     svg = d3
         .select(container)
         .select("svg")
+        .attr("cursor", "arrow");
     svg.call(
         d3.zoom().on("zoom", function (event) {
+            zoom = event.transform
             node.attr("transform", event.transform)
             link.attr("transform", event.transform)
         })
     )
 
-    radius = 10
+    radius = 15
 
     //	d3 color scheme
     color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -42,10 +53,10 @@ export const runForceGraph = (container) => {
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -2500; }))
+            .strength(function (d) { return -3000; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
-        .velocityDecay(0.9)
+        .velocityDecay(0.75)
 
     //	follow v4 general update pattern
     const update = (g) => {
@@ -69,6 +80,7 @@ export const runForceGraph = (container) => {
             .attr("class", "link")
             .attr("marker-start", "url(#circle-outline)")
             .attr("marker-end", "url(#arrowend-outline)")
+            .attr('transform', zoom)
             .merge(link)
         
         link.append("title").text(d => d.type)
@@ -92,6 +104,7 @@ export const runForceGraph = (container) => {
                 .on("drag", dragged)
                 .on("end", dragended)
             )
+            .attr('transform', zoom)
             .merge(node)
 
             
@@ -101,6 +114,8 @@ export const runForceGraph = (container) => {
             .attr("class", "node")
             .attr("r", radius)
             .attr("fill", function (d) { return color(d.id); })
+            // .attr('stroke-width', 5)
+            // .attr('stroke', 'transparent')
             
         circles.exit().remove()
 
@@ -110,7 +125,7 @@ export const runForceGraph = (container) => {
         labels = node.append("svg:text")
             .text(d => d.name)
             .attr("class", "label")
-            .attr("dy", radius + 10)
+            .attr("dy", 5)
             .attr("text-anchor", "middle")
         
         //	Set nodes, links, and alpha target for simulation
@@ -134,35 +149,39 @@ export const runForceGraph = (container) => {
     }
 
     function dragged(event, d) {
-        d.x = event.x;
-        d.y = event.y;
+        d.x = event.x
+        d.y = event.y
 
         ticked()
     }
 
     function dragended(event, d) {
         
-        // if (!event.active) simulation.alphaTarget(0);
-        // d.fx = null;
-        // d.fy = null;
+    }
+
+    function clipX(x) {
+        return Math.max(radius * 1.5, Math.min(width - radius * 1.5, x))
+    }
+
+    function clipY(y) {
+        return Math.max(radius * 2.5, Math.min(height - radius * 2.5, y))
     }
 
     //	tick event handler (nodes bound to container)
     function ticked() {
         link
-            .attr("x1", function (d) { return d.source.x; })
-            .attr("y1", function (d) { return d.source.y; })
-            .attr("x2", function (d) { return d.target.x; })
-            .attr("y2", function (d) { return d.target.y; });
+            .attr("x1", function (d) { return clipX(d.source.x) })
+            .attr("y1", function (d) { return clipY(d.source.y) })
+            .attr("x2", function (d) { return clipX(d.target.x) })
+            .attr("y2", function (d) { return clipY(d.target.y) })
 
         node.selectAll("circle")
-            .attr("cx", function(d) { return d.x = Math.max(radius * 1.5, Math.min(width - radius * 1.5, d.x)); })
-            .attr("cy", function(d) { return d.y = Math.max(radius * 2.5, Math.min(height - radius * 2.5, d.y)); });
+            .attr("cx", function(d) { return d.x = clipX(d.x) })
+            .attr("cy", function(d) { return d.y = clipY(d.y) })
 
         labels
-        .attr("x", function(d) { return d.x = Math.max(radius * 1.5, Math.min(width - radius * 1.5, d.x)); })
-        .attr("y", function(d) { return d.y = Math.max(radius * 2.5, Math.min(height - radius * 2.5, d.y)); });
-        
+            .attr("x", function(d) { return d.x = clipX(d.x) })
+            .attr("y", function(d) { return d.y = clipY(d.y) })
     }
 
     return update
