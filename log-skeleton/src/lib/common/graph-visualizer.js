@@ -13,6 +13,9 @@ var graph,
     simulation,
     color,
     radius,
+    tooltip,
+    currentTooltipNode,
+    showToolTip = false,
     zoom = d3.zoomIdentity;
 
 export const runForceGraph = (container) => {
@@ -25,16 +28,48 @@ export const runForceGraph = (container) => {
     svg = d3
         .select(container)
         .select("svg")
-        .attr("cursor", "arrow");
+        .attr("cursor", "arrow")
+        .on('click', event => {
+            // Return if click is not on the svg
+            if (event.target.id != 'graph-svg') return 
+
+            currentTooltipNode = null
+            showToolTip = false
+            const visibility = showToolTip ? 'visible' : 'hidden'
+            tooltip.style('visibility', visibility)
+        })
     svg.call(
         d3.zoom().on("zoom", function (event) {
             zoom = event.transform
             node.attr("transform", event.transform)
             link.attr("transform", event.transform)
-        })
+        }).scaleExtent([0.5, 6])
     )
 
     radius = 15
+
+    tooltip = d3
+        .select('body')
+        .select('#tooltip-div')
+        .attr('class', 'tooltip')
+
+    tooltip
+        .append('p')
+        .attr('text', d => 'Hallo')
+        .attr('visibility', 'hidden')
+
+    const clickNode = (event, node) => {
+        console.log(node);
+
+        showToolTip = true
+        const visibility = showToolTip ? 'visible' : 'hidden'
+        currentTooltipNode = node
+        
+        tooltip
+            .style('left', `${event.pageX + radius}px`)
+            .style('top', `${event.pageY + radius}px`)
+            .style('visibility', 'visible')
+    }
 
     //	d3 color scheme
     color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -53,7 +88,7 @@ export const runForceGraph = (container) => {
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -3000; }))
+            .strength(function (d) { return -1500; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
         .velocityDecay(0.75)
@@ -63,6 +98,10 @@ export const runForceGraph = (container) => {
         if (g === null) {
             return
         }
+
+        showToolTip = false
+        const visibility = showToolTip ? 'visible' : 'hidden'
+        tooltip.style('visibility', visibility)
 
         graph = g
         // Update link set based on current state
@@ -99,6 +138,7 @@ export const runForceGraph = (container) => {
         node = node
             .enter()
             .append("g")
+            .on('click', clickNode)
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -149,8 +189,18 @@ export const runForceGraph = (container) => {
     }
 
     function dragged(event, d) {
-        d.x = event.x
-        d.y = event.y
+
+        console.log(zoom);
+        console.log(event);
+
+        d.x = (event.sourceEvent.layerX - zoom.x) / zoom.k
+        d.y = (event.sourceEvent.layerY - zoom.y) / zoom.k
+
+        if (currentTooltipNode != null && d.id == currentTooltipNode.id) {
+            tooltip
+                .style('left', `${event.sourceEvent.pageX + radius}px`)
+                .style('top', `${event.sourceEvent.pageY + radius}px`)
+        }
 
         ticked()
     }
@@ -160,11 +210,13 @@ export const runForceGraph = (container) => {
     }
 
     function clipX(x) {
-        return Math.max(radius * 1.5, Math.min(width - radius * 1.5, x))
+        return x
+        // return Math.max(radius * 1.5, Math.min(width - radius * 1.5, x))
     }
 
     function clipY(y) {
-        return Math.max(radius * 2.5, Math.min(height - radius * 2.5, y))
+        return y
+        // return Math.max(radius * 2.5, Math.min(height - radius * 2.5, y))
     }
 
     //	tick event handler (nodes bound to container)

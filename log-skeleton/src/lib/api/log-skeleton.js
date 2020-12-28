@@ -243,6 +243,7 @@ const useProvideLogSkeleton = () => {
             //    after the API call would cause an infite API call loop.
             if (model == null) {
                 failure(['Something is wrong!'])
+                console.log('null');
                 return
             }
 
@@ -260,12 +261,13 @@ const useProvideLogSkeleton = () => {
             setActiveActivities(activities)
         } else { // Something is wrong
             const err = await res.json()
+            console.log('else');
 
             failure([err.error])
 
             setLogSkeleton(null)
 
-            addToast(err.error, {
+            addToast('Session expired', {
                 appearance: 'error',
                 autoDismiss: true,
             })

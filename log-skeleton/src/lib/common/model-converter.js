@@ -1,5 +1,4 @@
-import Activities from "../../components/activities";
-import transitiveClosure from "../logic/transitive-closure";
+import { minimalTransitive } from '../logic/minimal-transitive';
 
 export const graphConverter = (logSkeleton, activities) => {
 
@@ -23,8 +22,11 @@ export const graphConverter = (logSkeleton, activities) => {
     for (let rel of Object.keys(logSkeleton)) {
         if (rel === 'counter') continue
 
-        const closure = transitiveClosure(logSkeleton[rel], activities)
-        console.log(closure);
+        if (rel.startsWith('always')) {
+            var closure = minimalTransitive(logSkeleton[rel], activities)
+        } else {
+            var closure = logSkeleton[rel]
+        }
 
         const ed = closure.filter(item => {
             const source = activities.indexOf(item[0])

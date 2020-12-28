@@ -6,7 +6,7 @@ const reachable = (start, vertices, adjacentList) => {
     }
     let stack = [start];
     do {
-        cur = stack.pop();
+        let cur = stack.pop();
         visited[cur] = true;
         for(const neighbor of adjacentList[cur]){
             if(visited[neighbor] === false){
