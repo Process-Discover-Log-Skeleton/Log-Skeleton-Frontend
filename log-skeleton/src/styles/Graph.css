@@ -1,19 +1,19 @@
 .container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 0;
-  background-color:  rgb(244, 246, 248);
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 0;
+    background-color:  rgb(244, 246, 248);
 }
 
 .container svg {
-  /* display: block; */
-  width: 100%;
-  height: 100%;
+    /* display: block; */
+    width: 100%;
+    height: 100%;
 }
 
 .label {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     fill: black;
     /* filter: drop-shadow( 3px 0px 10px rgb(255, 255, 255)); */
@@ -26,16 +26,16 @@
 }
 
 .node {
-  /* font-: white */
+    /* font-: white */
 }
 
 text {
-  font-size: 0.5rem;
-  fill: #000000;
+    font-size: 0.5rem;
+    fill: #000000;
 }
 
 .node text {
-    font-size: 0.5rem;
+    font-size: 0.25rem;
     fill: white;
 }
 
@@ -47,18 +47,36 @@ text {
 }
 
 .tooltip {
-  position: absolute;
-  text-align: center;
-  /* top: 20px;
-  left: 20px; */
-  z-index: 10;
-  width: 110px;
-  height: 20px;
-  padding: 10px;
-  font: 12px sans-serif;
-  background: white;
-  border: 1px var(--border-color) solid;
-  border-radius: 8px;
-  pointer-events: none;
-  box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+    position: absolute;
+    text-align: center;
+    overflow: scroll;
+    z-index: 10;
+    min-width: 110px;
+    padding: 10px;
+    font: 12px sans-serif;
+    background: white;
+    border: 1px var(--border-color) solid;
+    border-radius: 8px;
+    pointer-events: none;
+    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+}
+
+.tooltipTitle {
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding-bottom: 10px;
+    border-bottom: 1px var(--border-color) solid;
+}
+
+.tooltipCounter {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  justify-content: space-evenly;
+  font-size: 0.75rem;
+}
+
+.tooltipCounterItem {
+  border-right: 1px var(--border-color) solid;
 }

@@ -49,6 +49,7 @@ export const graphConverter = (logSkeleton, activities) => {
     }
 
     graph.links = edges
+    graph.counter = logSkeleton['counter']
 
     return graph
 }

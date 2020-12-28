@@ -18,11 +18,52 @@ var graph,
     showToolTip = false,
     zoom = d3.zoomIdentity;
 
+const tooltipContent = (node, counter) => {
+    return `
+        <div>
+            <div class="tooltipTitle">${node.name}</div>
+            <div class="tooltipCounter">
+                <div class="tooltipCounterItem">
+                    <div>
+                        Min
+                    </div>
+                    <div>
+                        ${counter.min}
+                    </div>
+                </div>
+                <div class="tooltipCounterItem">
+                    <div>
+                        Max
+                    </div>
+                    <div>
+                        ${counter.max}
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        Sum
+                    </div>
+                    <div>
+                        ${counter.sum}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+}
+
 export const runForceGraph = (container) => {
 
     const containerRect = container.getBoundingClientRect()
     const width = containerRect.width
     const height = containerRect.height
+
+    const hideTooltip = () =>  {
+        currentTooltipNode = null
+        showToolTip = false
+        const visibility = showToolTip ? 'visible' : 'hidden'
+        tooltip.style('visibility', visibility)
+    }
 
     //	svg and sizing
     svg = d3
@@ -33,13 +74,11 @@ export const runForceGraph = (container) => {
             // Return if click is not on the svg
             if (event.target.id != 'graph-svg') return 
 
-            currentTooltipNode = null
-            showToolTip = false
-            const visibility = showToolTip ? 'visible' : 'hidden'
-            tooltip.style('visibility', visibility)
+            hideTooltip()
         })
     svg.call(
         d3.zoom().on("zoom", function (event) {
+            hideTooltip()
             zoom = event.transform
             node.attr("transform", event.transform)
             link.attr("transform", event.transform)
@@ -69,6 +108,11 @@ export const runForceGraph = (container) => {
             .style('left', `${event.pageX + radius}px`)
             .style('top', `${event.pageY + radius}px`)
             .style('visibility', 'visible')
+
+        if (graph != null) {
+            console.log(node);
+            tooltip.html(tooltipContent(node, graph.counter[node.name]))
+        }
     }
 
     //	d3 color scheme
