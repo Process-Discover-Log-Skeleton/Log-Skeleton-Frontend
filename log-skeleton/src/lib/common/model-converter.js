@@ -1,3 +1,4 @@
+import { generateColors } from '../logic/equivalence-color';
 import { minimalTransitive } from '../logic/minimal-transitive';
 
 export const graphConverter = (logSkeleton, activities) => {
@@ -7,11 +8,19 @@ export const graphConverter = (logSkeleton, activities) => {
         links: []
     }
 
+    var colors = {}
+
+    if (logSkeleton['equivalence'] != null) {
+        colors = generateColors(logSkeleton['equivalence'])
+        console.log(colors)
+    }
+
     // Map the nodes to a graph-node
     let act = activities.map((item, index) => {
         return {
             id: index,
-            name: item
+            name: item,
+            color: colors[item] ?? '#DDD'
         }
     })
 
@@ -19,8 +28,9 @@ export const graphConverter = (logSkeleton, activities) => {
 
     let edges = []
 
+    // Convert all relationships to links but 'counter' and 'equivilence'
     for (let rel of Object.keys(logSkeleton)) {
-        if (rel === 'counter') continue
+        if (rel === 'counter' || rel === 'equivalence') continue
 
         if (rel.startsWith('always')) {
             var closure = minimalTransitive(logSkeleton[rel], activities)
@@ -47,6 +57,7 @@ export const graphConverter = (logSkeleton, activities) => {
 
         edges = edges.concat(ed)
     }
+
 
     graph.links = edges
     graph.counter = logSkeleton['counter']

@@ -197,7 +197,7 @@ export const runForceGraph = (container) => {
             .merge(circles)
             .attr("class", "node")
             .attr("r", radius)
-            .attr("fill", function (d) { return color(d.id); })
+            .style("fill", d => d.color)
             // .attr('stroke-width', 5)
             // .attr('stroke', 'transparent')
             

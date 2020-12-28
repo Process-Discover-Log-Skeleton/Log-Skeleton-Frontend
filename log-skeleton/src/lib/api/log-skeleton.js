@@ -8,7 +8,8 @@ const apiURL = process.env.REACT_APP_API_URL
 
 const relationships = [
     "always_after",
-    "always_before"
+    "always_before",
+    "equivalence"
 ]
 
 // Context for the log skeleton data
