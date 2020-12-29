@@ -47,7 +47,8 @@ const GraphVisualizer = () => {
     return (
         <div ref={node}
              className='container'>
-                 <svg id='graph-svg'></svg>
+                <div id='zoomLevel'></div>
+                <svg id='graph-svg'></svg>
         </div>
     )
 }

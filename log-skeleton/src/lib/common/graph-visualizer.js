@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import { selectAll } from 'd3';
 import styles from '../../styles/Graph.css'
 import { generateMarkers } from './d3-markers';
+import { trimString } from './trim-strings';
 
 //	graph data store
 var graph,
@@ -16,6 +17,7 @@ var graph,
     tooltip,
     currentTooltipNode,
     showToolTip = false,
+    zoomLevel,
     zoom = d3.zoomIdentity;
 
 const tooltipContent = (node, counter) => {
@@ -77,15 +79,26 @@ export const runForceGraph = (container) => {
             hideTooltip()
         })
     svg.call(
-        d3.zoom().on("zoom", function (event) {
+        d3.zoom()
+        .on("start", (event) => {
+            zoomLevel.style('opacity', 1)
+        })
+        .on("zoom",  (event) => {
             hideTooltip()
             zoom = event.transform
+            zoomLevel.style('opacity', 1)
+            zoomLevel.html(`${(zoom.k * 100).toFixed(1)}%`)
             node.attr("transform", event.transform)
             link.attr("transform", event.transform)
+        })
+        .on("end", (event) => {
+            setTimeout(() => {
+                zoomLevel.style('opacity', 0)
+            }, 1000)
         }).scaleExtent([0.5, 6])
     )
 
-    radius = 15
+    radius = 20
 
     tooltip = d3
         .select('body')
@@ -96,6 +109,11 @@ export const runForceGraph = (container) => {
         .append('p')
         .attr('text', d => 'Hallo')
         .attr('visibility', 'hidden')
+
+    zoomLevel = d3
+        .select(container)
+        .select('#zoomLevel')
+        .style('opactiy', 0)
 
     const clickNode = (event, node) => {
         console.log(node);
@@ -206,8 +224,12 @@ export const runForceGraph = (container) => {
         node.append("title")
             .text(d => d.name)
 
-        labels = node.append("svg:text")
-            .text(d => d.name)
+        labels = node
+            .append("g")
+            
+        labels
+            .append("text")
+            .text(d => trimString(d.name, 6, false))
             .attr("class", "label")
             .attr("dy", 5)
             .attr("text-anchor", "middle")
@@ -276,8 +298,10 @@ export const runForceGraph = (container) => {
             .attr("cy", function(d) { return d.y = clipY(d.y) })
 
         labels
+            .selectAll("text")
             .attr("x", function(d) { return d.x = clipX(d.x) })
             .attr("y", function(d) { return d.y = clipY(d.y) })
+
     }
 
     return update
