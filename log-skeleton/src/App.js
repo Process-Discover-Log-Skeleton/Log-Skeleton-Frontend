@@ -3,8 +3,14 @@ import Content from './components/content'
 import './App.css';
 import { LogSkeletonProvider } from './lib/api/log-skeleton';
 import { ToastProvider } from 'react-toast-notifications';
+import { useEffect } from 'react';
 
 function App() {
+
+  useEffect(() => {
+    document.title = 'Log Skeleton'
+  }, [])
+
   return (
     <div className="App">
       <ToastProvider

@@ -8,7 +8,8 @@ const apiURL = process.env.REACT_APP_API_URL
 
 const relationships = [
     "always_after",
-    "always_before"
+    "always_before",
+    "equivalence"
 ]
 
 // Context for the log skeleton data
@@ -71,7 +72,10 @@ const useProvideLogSkeleton = () => {
         // Filter based on the activities
         filtered = filterRelationships(filtered, activeRelationships)
 
-        return filtered
+        return {
+            logSkeleton: filtered,
+            activities: activeActivities
+        }
     }
 
     // Filter the logSkeleton as soon as it changes
@@ -214,7 +218,7 @@ const useProvideLogSkeleton = () => {
                 }, '')
             }
 
-            let extension = 'extended-trace=0&'
+            let extension = 'extended-trace=1&'
 
             // Request the Log skeleton model from the backend
             var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}`, {
@@ -240,6 +244,7 @@ const useProvideLogSkeleton = () => {
             //    after the API call would cause an infite API call loop.
             if (model == null) {
                 failure(['Something is wrong!'])
+                console.log('null');
                 return
             }
 
@@ -257,12 +262,13 @@ const useProvideLogSkeleton = () => {
             setActiveActivities(activities)
         } else { // Something is wrong
             const err = await res.json()
+            console.log('else');
 
             failure([err.error])
 
             setLogSkeleton(null)
 
-            addToast(err.error, {
+            addToast('Session expired', {
                 appearance: 'error',
                 autoDismiss: true,
             })
@@ -320,7 +326,7 @@ const useProvideLogSkeleton = () => {
         requiredActivities,
         setActiveActivities,
         setActiveRelationships,
-        setFilteredLogSkeleton, // Sets the filtered log skeleton
+        // setFilteredLogSkeleton, // Sets the filtered log skeleton
         registerEventLog, // Registers a new event log
         resetFilteredLogSkeleton, // Resets the filtered log to the original state
         fetchLogSkeleton, // Fetches the log skeleton model from the api

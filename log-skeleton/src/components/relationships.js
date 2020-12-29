@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from '../styles/SidePanel.module.css'
+import { trimString } from '../lib/common/trim-strings'
 
 const relationships = [
     "always_after",
@@ -55,7 +56,7 @@ const RelationshipsBox = ({ title, callback, toggle }) => {
         <button
             className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
             onClick={handleToggle}>
-            {title.replaceAll('_', ' ')}
+            {trimString(title.replaceAll('_', ' '))}
         </button>
     )
 }

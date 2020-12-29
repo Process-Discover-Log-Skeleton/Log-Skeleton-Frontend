@@ -1,7 +1,6 @@
 import React from 'react'
 import styles from '../styles/Content.module.css'
 import MainPanel from '../components/main-panel'
-import Splitter from './split'
 import Relationships from './relationships'
 import Activities from './activities'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
@@ -25,7 +24,7 @@ const Content = () => {
             <div className={styles.sidePanel}>
                 <RequiredActivities></RequiredActivities>
                 <ForbiddenActivities></ForbiddenActivities>
-                <Splitter value={[[1,2],[3,4]]}/>
+                {/* <Splitter value={[[1,2],[3,4]]}/> */}
             </div>
 
             <div className={styles.midPanel}>
