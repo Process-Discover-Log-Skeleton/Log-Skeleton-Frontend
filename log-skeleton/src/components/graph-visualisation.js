@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
-import * as d3 from 'd3'
+import React, { useEffect, useRef } from 'react'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import '../styles/Graph.css'
 import { runForceGraph } from '../lib/common/graph-visualizer'
@@ -11,13 +10,6 @@ const GraphVisualizer = () => {
     // Reference to the svg
     const node = useRef(null)
     const model = useLogSkeleton()
-
-    // var [updateGraph, setUpdateGraph] = useState(null);
-
-    const nodeHoverTooltip = React.useCallback((node) => {
-        console.log(node.name);
-        return `<div>${node.name}</div>`;
-      }, []);
 
     useEffect(() => {
         if (node.current != null) {

@@ -55,6 +55,7 @@ const EmptyLogSkeleton = () => {
 
 // Log Skeleton Panel
 
+// eslint-disable-next-line
 const LogSkeletonPanel = () => {
     const model = useLogSkeleton()
 

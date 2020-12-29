@@ -1,6 +1,4 @@
 import * as d3 from 'd3'
-import { selectAll } from 'd3';
-import styles from '../../styles/Graph.css'
 import { generateMarkers } from './d3-markers';
 import { trimString } from './trim-strings';
 
@@ -12,7 +10,6 @@ var graph,
     labels,
     svg,
     simulation,
-    color,
     radius,
     tooltip,
     currentTooltipNode,
@@ -74,7 +71,7 @@ export const runForceGraph = (container) => {
         .attr("cursor", "arrow")
         .on('click', event => {
             // Return if click is not on the svg
-            if (event.target.id != 'graph-svg') return 
+            if (event.target.id !== 'graph-svg') return 
 
             hideTooltip()
         })
@@ -119,7 +116,6 @@ export const runForceGraph = (container) => {
         console.log(node);
 
         showToolTip = true
-        const visibility = showToolTip ? 'visible' : 'hidden'
         currentTooltipNode = node
         
         tooltip
@@ -132,9 +128,6 @@ export const runForceGraph = (container) => {
             tooltip.html(tooltipContent(node, graph.counter[node.name]))
         }
     }
-
-    //	d3 color scheme
-    color = d3.scaleOrdinal(d3.schemeCategory10);
 
     // elements for data join
     link = svg.append("g").selectAll(".link")
@@ -226,7 +219,7 @@ export const runForceGraph = (container) => {
 
         labels = node
             .append("g")
-            
+
         labels
             .append("text")
             .text(d => trimString(d.name, 6, false))
@@ -262,7 +255,7 @@ export const runForceGraph = (container) => {
         d.x = (event.sourceEvent.layerX - zoom.x) / zoom.k
         d.y = (event.sourceEvent.layerY - zoom.y) / zoom.k
 
-        if (currentTooltipNode != null && d.id == currentTooltipNode.id) {
+        if (currentTooltipNode !== null && d.id === currentTooltipNode.id) {
             tooltip
                 .style('left', `${event.sourceEvent.pageX + radius}px`)
                 .style('top', `${event.sourceEvent.pageY + radius}px`)

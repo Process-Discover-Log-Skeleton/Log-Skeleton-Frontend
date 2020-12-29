@@ -32,17 +32,19 @@ export const graphConverter = (logSkeleton, activities) => {
     for (let rel of Object.keys(logSkeleton)) {
         if (rel === 'counter' || rel === 'equivalence') continue
 
+        var closure;
+
         if (rel.startsWith('always')) {
-            var closure = minimalTransitive(logSkeleton[rel], activities)
+            closure = minimalTransitive(logSkeleton[rel], activities)
         } else {
-            var closure = logSkeleton[rel]
+            closure = logSkeleton[rel]
         }
 
         const ed = closure.filter(item => {
             const source = activities.indexOf(item[0])
             const target = activities.indexOf(item[1])
 
-            return source != target
+            return source !== target
         }).map(item => {
             const source = activities.indexOf(item[0])
             const target = activities.indexOf(item[1])

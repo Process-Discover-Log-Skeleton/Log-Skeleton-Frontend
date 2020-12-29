@@ -1,5 +1,3 @@
-import * as d3 from 'd3'
-
 export const generateMarkers = (svg, radius) => {
 
     // Arrow at the beginning of the edge
