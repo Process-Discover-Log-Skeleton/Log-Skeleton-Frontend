@@ -180,7 +180,7 @@ const LogSkeletonStatus = () => {
         return (
             <NavItem icon={<>
                 <ErrorIcon className={styles.checkmark} />
-                {model.logSkeleton.file}
+                {model.config.file}
             </>}>
                 <DropDown>
                     <DropDownTitle>
@@ -188,7 +188,7 @@ const LogSkeletonStatus = () => {
                 </DropDownTitle>
                     <DropDownItem>
                         <span> <ErrorIcon className={styles.checkmark} /> </span>
-                        {model.logSkeleton.errors}
+                        {model.config.errors}
                     </DropDownItem>
                 </DropDown>
             </NavItem>)

@@ -20,6 +20,8 @@ const defaultConfig = {
     id: null,
     // File name
     file: null,
+    // The actual file
+    fileContent: null,
     // Status returned by the backend
     status: null,
     // Potential errors from the backend
@@ -89,7 +91,7 @@ const useProvideLogSkeleton = () => {
     // Fetch as soon as something changes in the config
     useEffect(() => {
         // Fetch log skeleton in case a new id was set.
-        if (hasEventLog() && logSkeleton.logSkeleton == null) {
+        if (hasEventLog() && ok() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
         }
         // eslint-disable-next-line
@@ -112,13 +114,84 @@ const useProvideLogSkeleton = () => {
     // Refetch the log skeleton as soons as the forbidden/ required activties change.
     useEffect(() => {
         // In case there is no log id -> return
-        if (!modelIsLoaded()) {
+        if (!modelIsLoaded() || !ok()) {
             return
         }
 
         fetchLogSkeleton()
         // eslint-disable-next-line
     }, [forbiddenActivities, requiredActivities])
+
+
+    const handleEventLogRegistration = async (response, file) => {
+        if (response.ok) { // Response is okay
+            const {id, activities} = await response.json()
+
+            if (!hasEventLog()) {
+                addToast('Registered event-log.', {
+                    appearance: 'success',
+                    autoDismiss: true,
+                })
+            }
+
+            // Set original log skeleton
+            setLogSkeleton({
+                ...defaultLS,
+                activities: activities
+            })
+            
+            // Set config
+            setConfig({
+                id: id,
+                file: file.name,
+                fileContent: file,
+                status: 'ok'
+            })
+
+            setFilteredLogSkeleton({
+                ...defaultLS,
+                activities: activities
+            })
+
+            setActiveActivities(activities)
+
+        } else { // Something is wrong
+            const err = await response.json()
+
+            setConfig({
+                ...config,
+                file: file.name,
+                fileContent: file,
+                status: 'failure',
+                errors: err.error
+            })
+
+            setLogSkeleton(defaultLS)
+
+            addToast(err.error, {
+                appearance: 'error',
+                autoDismiss: false,
+            })
+        }
+    }
+
+    const registerExampleEventLog = async () => {
+        try {
+            // Post the event-log to the backend
+            var response = await fetch(`${apiURL}/event-log/example`, {
+                method: 'POST'
+            })
+        } catch (e) {
+            // In case of any errors
+            addToast(e.message, {
+                appearance: 'error',
+                autoDismiss: false,
+            })
+            return
+        }
+
+        await handleEventLogRegistration(response, {name: 'Example'})
+    }
 
     // Api event-log registration
     const registerEventLog = async (file) => {
@@ -140,52 +213,9 @@ const useProvideLogSkeleton = () => {
             })
             return
         }
+ 
+        await handleEventLogRegistration(response, file)
 
-        if (response.ok) { // Response is okay
-            const {id, activities} = await response.json()
-
-            // Set original log skeleton
-            setLogSkeleton({
-                ...defaultLS,
-                activities: activities
-            })
-            
-            // Set config
-            setConfig({
-                id: id,
-                file: file.name,
-                status: 'ok'
-            })
-
-            setFilteredLogSkeleton({
-                ...defaultLS,
-                activities: activities
-            })
-
-            setActiveActivities(activities)
-
-            addToast('Registered event-log.', {
-                appearance: 'success',
-                autoDismiss: true,
-            })
-
-        } else { // Something is wrong
-            const err = await response.json()
-
-            setConfig({
-                ...config,
-                file: file.name,
-                status: 'failure',
-                errors: err.error
-            })
-
-            setLogSkeleton(defaultLS)
-
-            addToast(err.error, {
-                appearance: 'error',
-                autoDismiss: false,
-            })
-        }
     }
 
     // Log Skeleton model fetching
@@ -233,6 +263,8 @@ const useProvideLogSkeleton = () => {
             return
         }
 
+        console.log(`Code: ${res.status}`);
+
         if (res.ok) { // Response is okay
             const { activities, parameters, model } = await res.json()
             console.log(activities);
@@ -260,15 +292,44 @@ const useProvideLogSkeleton = () => {
             })
 
             setActiveActivities(activities)
+        } else if (res.status == '410') { // Missing resource
+            // At this point potentially the server 
+            // shut down during the session and the 
+            // event log has to get reregistered
+
+            // Check whether an event log is registered locally
+            if (hasEventLog() && config.fileContent != null) {
+                addToast('Ooops! This may take longer than expected.', {
+                    appearance: 'info',
+                    autoDismiss: true,
+                    autoDismissTimeout: 3000
+                })
+
+                registerEventLog(config.fileContent)
+
+                return
+            }
+
+            const err = await res.json()
+            console.log('else');
+
+            failure([err.error])
+
+            setLogSkeleton(defaultLS)
+
+            addToast(err.error, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
         } else { // Something is wrong
             const err = await res.json()
             console.log('else');
 
             failure([err.error])
 
-            setLogSkeleton(null)
+            setLogSkeleton(defaultLS)
 
-            addToast('Session expired', {
+            addToast(err.error, {
                 appearance: 'error',
                 autoDismiss: true,
             })
@@ -298,6 +359,7 @@ const useProvideLogSkeleton = () => {
     }
 
     const modelIsLoaded = () => {
+        console.log(logSkeleton);
         return hasEventLog() && logSkeleton.logSkeleton != null
     }
 
@@ -328,6 +390,7 @@ const useProvideLogSkeleton = () => {
         setActiveRelationships,
         // setFilteredLogSkeleton, // Sets the filtered log skeleton
         registerEventLog, // Registers a new event log
+        registerExampleEventLog, // Fetch example event log
         resetFilteredLogSkeleton, // Resets the filtered log to the original state
         fetchLogSkeleton, // Fetches the log skeleton model from the api
         hasEventLog, // Returns if an event log is loaded

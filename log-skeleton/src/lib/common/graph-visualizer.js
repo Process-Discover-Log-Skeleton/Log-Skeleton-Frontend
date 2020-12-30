@@ -113,6 +113,10 @@ export const runForceGraph = (container) => {
         .style('opactiy', 0)
 
     const clickNode = (event, node) => {
+        if (graph == null || graph.counter[node.name] == null) {
+            return
+        }
+
         console.log(node);
 
         showToolTip = true
@@ -123,10 +127,8 @@ export const runForceGraph = (container) => {
             .style('top', `${event.pageY + radius}px`)
             .style('visibility', 'visible')
 
-        if (graph != null) {
             console.log(node);
             tooltip.html(tooltipContent(node, graph.counter[node.name]))
-        }
     }
 
     // elements for data join
@@ -224,7 +226,7 @@ export const runForceGraph = (container) => {
             .append("text")
             .text(d => trimString(d.name, 6, false))
             .attr("class", "label")
-            .attr("dy", 5)
+            .attr("dy", 3)
             .attr("text-anchor", "middle")
         
         //	Set nodes, links, and alpha target for simulation
@@ -255,7 +257,9 @@ export const runForceGraph = (container) => {
         d.x = (event.sourceEvent.layerX - zoom.x) / zoom.k
         d.y = (event.sourceEvent.layerY - zoom.y) / zoom.k
 
-        if (currentTooltipNode !== null && d.id === currentTooltipNode.id) {
+        if (currentTooltipNode !== null &&
+            currentTooltipNode.id != null &&
+            d.id === currentTooltipNode.id) {
             tooltip
                 .style('left', `${event.sourceEvent.pageX + radius}px`)
                 .style('top', `${event.sourceEvent.pageY + radius}px`)

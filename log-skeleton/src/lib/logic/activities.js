@@ -25,12 +25,7 @@ export const filterActivities = (logSkeleton, activities) => {
     }
 
     // Map the counter
-    filteredLogSkeleton['counter'] = {}
-
-    for (let activity of activities) {
-        filteredLogSkeleton['counter'][activity] =
-            logSkeleton['counter'][activity]
-    }
+    filteredLogSkeleton['counter'] = logSkeleton['counter']
 
     // Return the filtered log skeleton model
     return filteredLogSkeleton
