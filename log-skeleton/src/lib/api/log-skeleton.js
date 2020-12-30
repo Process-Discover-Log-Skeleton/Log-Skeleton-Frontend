@@ -378,6 +378,23 @@ const useProvideLogSkeleton = () => {
         setRequiredActivities([])
     }
 
+    const activityDisplayName = (activity) => {
+        if (config == null || config.parameters == null) {
+            return activity
+        }
+        if (config.parameters['trace-start'] == null ||
+            config.parameters['trace-end'] == null) {
+                return activity
+            }
+
+        if (activity == config.parameters['trace-start']){
+            return '🚀'
+        }else if (activity == config.parameters['trace-end']) {
+            return '🏁'
+        }
+        return activity
+    }
+
     return {
         logSkeleton, // The model object
         filteredLogSkeleton,
@@ -399,6 +416,7 @@ const useProvideLogSkeleton = () => {
         hasErrors, // Returns if there are any errors
         modelIsLoaded, // Returns if the model has been loaded from the backend
         setRequiredActivities,
-        setForbiddenActivities
+        setForbiddenActivities,
+        activityDisplayName
     }
 }

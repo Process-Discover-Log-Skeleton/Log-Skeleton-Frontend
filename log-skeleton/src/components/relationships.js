@@ -48,7 +48,6 @@ const Relationships = () => {
 const RelationshipsBox = ({ title, callback, toggle }) => {
 
     const handleToggle = (event) => {
-        console.log(title);
         callback(title, !toggle)
     }
 
