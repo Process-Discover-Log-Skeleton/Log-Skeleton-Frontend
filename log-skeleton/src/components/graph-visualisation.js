@@ -28,7 +28,10 @@ const GraphVisualizer = () => {
             return
         }
         
-        let graph = graphConverter(model.filteredLogSkeleton.logSkeleton, model.filteredLogSkeleton.activities)
+        let graph = graphConverter(model.filteredLogSkeleton.logSkeleton,
+                                   model.filteredLogSkeleton.activities,
+                                   model.config.parameters['trace-start'],
+                                   model.config.parameters['trace-end'])
         
         console.log(graph);
 
@@ -40,7 +43,10 @@ const GraphVisualizer = () => {
         <div ref={node}
              className='container'>
                 <div id='zoomLevel'></div>
-                <svg id='graph-svg'></svg>
+                <svg id='graph-svg'>
+                    <g id='nodes'></g>
+                    <g id='links'></g>
+                </svg>
         </div>
     )
 }

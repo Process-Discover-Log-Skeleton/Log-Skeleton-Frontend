@@ -160,6 +160,7 @@ const useProvideLogSkeleton = () => {
 
             setConfig({
                 ...config,
+                id: null,
                 file: file.name,
                 fileContent: file,
                 status: 'failure',
@@ -167,6 +168,7 @@ const useProvideLogSkeleton = () => {
             })
 
             setLogSkeleton(defaultLS)
+            setFilteredLogSkeleton(defaultLS)
 
             addToast(err.error, {
                 appearance: 'error',
