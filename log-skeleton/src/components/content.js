@@ -5,6 +5,7 @@ import Relationships from './relationships'
 import Activities from './activities'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import { RequiredActivities, ForbiddenActivities } from "./activity-filter";
+import Slider from "./Slider";
 
 const Content = () => {
     const { modelIsLoaded } = useLogSkeleton()
@@ -33,6 +34,7 @@ const Content = () => {
             <div className={styles.sidePanel}>
                 <Activities></Activities>
                 <Relationships></Relationships>
+                <Slider></Slider>
             </div>
         </div>
     );
