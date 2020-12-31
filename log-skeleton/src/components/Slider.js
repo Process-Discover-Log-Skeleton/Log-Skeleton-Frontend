@@ -23,7 +23,8 @@ const Slider = () =>{
             value={value}
             tooltip='off'
             onChange={e => setValue(e.target.value)}
-            onAfterChange={/*e => {TODO: set noise threshold here (e.target.value)}*/}>
+            //onAfterChange={e => {TODO: set noise threshold here (e.target.value)}}
+        >
         </RangeSlider>
         <input
             type= "number" required
