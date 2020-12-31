@@ -1,10 +1,10 @@
 import React from 'react';
-import { useLogSkeleton } from '../lib/api/log-skeleton'
+//import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from "../styles/SidePanel.module.css";
 import RangeSlider from 'react-bootstrap-range-slider';
 
 const Slider = () =>{
-    const model = useLogSkeleton()
+    //const model = useLogSkeleton()
     //TODO: set initial noise (from the model)
     const [ value, setValue ] = React.useState(0.2);
 
@@ -23,7 +23,7 @@ const Slider = () =>{
             value={value}
             tooltip='off'
             onChange={e => setValue(e.target.value)}
-            onAfterChange={e => {/*TODO: set noise threshold here (e.target.value)*/}}>
+            onAfterChange={/*e => {TODO: set noise threshold here (e.target.value)}*/}>
         </RangeSlider>
         <input
             type= "number" required
