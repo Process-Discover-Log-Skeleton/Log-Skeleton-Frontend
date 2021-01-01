@@ -269,7 +269,7 @@ const useProvideLogSkeleton = () => {
                 noiseVal = config.parameters.noiseThreshold
             }
 
-            let noiseThreshold = `noise-threshold=${noiseVal}`
+            let noiseThreshold = `noiseThreshold=${noiseVal}`
 
             // Request the Log skeleton model from the backend
             var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}${noiseThreshold}`, {
