@@ -59,10 +59,10 @@ const NavigationBar = () => {
             </div>
             <ul className={styles.navContainer}>
                 <LogSkeletonStatus></LogSkeletonStatus>
-                <NavItem
+                {/* <NavItem
                     icon={<BellIcon className={styles.icon} />}>
 
-                </NavItem>
+                </NavItem> */}
                 <NavItem
                     icon={<LogSkeletonIcon className={styles.icon} />}>
                     <DropDown>

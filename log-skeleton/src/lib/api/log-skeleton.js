@@ -27,7 +27,9 @@ const defaultConfig = {
     // Potential errors from the backend
     errors: null,
     // Parameters of the LS model
-    parameters: null
+    parameters: {
+        noiseThreshold: 0.0
+    }
 }
 
 const defaultLS = {
@@ -82,6 +84,7 @@ const useProvideLogSkeleton = () => {
 
     // Filter the logSkeleton as soon as it changes
     useEffect(() => {
+        console.log('log skeleton');
         const filtered = filterLogSkelton(logSkeleton.logSkeleton)
 
         setFilteredLogSkeleton(filtered)
@@ -90,16 +93,22 @@ const useProvideLogSkeleton = () => {
 
     // Fetch as soon as something changes in the config
     useEffect(() => {
+        console.log('Id changed')
         // Fetch log skeleton in case a new id was set.
         if (hasEventLog() && ok() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
         }
         // eslint-disable-next-line
-    }, [config])
+    }, [config.id])
+
+    useEffect(() => {
+        console.log('Noise threshold changed');
+    }, [config.parameters.noiseThreshold])
 
     // Refilter the filteredLogSkeleton
     // as soon as any active items changed.
     useEffect(() => {
+        console.log('active');
         // In case there is no event log
         if (!modelIsLoaded()) {
             return
@@ -113,6 +122,7 @@ const useProvideLogSkeleton = () => {
 
     // Refetch the log skeleton as soons as the forbidden/ required activties change.
     useEffect(() => {
+        console.log('forbidden');
         // In case there is no log id -> return
         if (!modelIsLoaded() || !ok()) {
             return
@@ -142,6 +152,7 @@ const useProvideLogSkeleton = () => {
             
             // Set config
             setConfig({
+                ...defaultConfig, // Keep noise threshold
                 id: id,
                 file: file.name,
                 fileContent: file,
@@ -172,7 +183,7 @@ const useProvideLogSkeleton = () => {
 
             addToast(err.error, {
                 appearance: 'error',
-                autoDismiss: false,
+                autoDismiss: true,
             })
         }
     }
@@ -252,8 +263,16 @@ const useProvideLogSkeleton = () => {
 
             let extension = 'extended-trace=1&'
 
+            let noiseVal = 0.0
+
+            if (!isNaN(config.parameters.noiseThreshold)) {
+                noiseVal = config.parameters.noiseThreshold
+            }
+
+            let noiseThreshold = `noise-threshold=${noiseVal}`
+
             // Request the Log skeleton model from the backend
-            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}`, {
+            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}${noiseThreshold}`, {
                 method: 'POST'
             })
         } catch (e) {
@@ -397,6 +416,20 @@ const useProvideLogSkeleton = () => {
         return activity
     }
 
+    const setNoiseThreshold = (value) => {
+        // Wrong type
+        if (isNaN(value) || value > 1 || value < 0) {
+            return
+        }
+        setConfig({
+            ...config,
+            parameters: {
+                ...config.parameters,
+                noiseThreshold: value
+            }
+        })
+    }
+
     return {
         logSkeleton, // The model object
         filteredLogSkeleton,
@@ -419,6 +452,7 @@ const useProvideLogSkeleton = () => {
         modelIsLoaded, // Returns if the model has been loaded from the backend
         setRequiredActivities,
         setForbiddenActivities,
-        activityDisplayName
+        activityDisplayName,
+        setNoiseThreshold
     }
 }

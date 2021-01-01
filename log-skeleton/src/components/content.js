@@ -5,7 +5,7 @@ import Relationships from './relationships'
 import Activities from './activities'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import { RequiredActivities, ForbiddenActivities } from "./activity-filter";
-import Slider from "./Slider";
+import Slider from './noise-threshold'
 
 const Content = () => {
     const { modelIsLoaded } = useLogSkeleton()
