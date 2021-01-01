@@ -19,11 +19,11 @@ const HSVtoRGB = (h, s, v) => {
 // Each activity is assigned a tuple [R, G, B] 
 export const generateColors = (equiv) => {
     // Default saturation and value
-    const s = 0.8
-    const v = 0.8
+    const s = 0.75
+    const v = 0.85
 
     // Pseudo random hue in [0, 1]
-    let h = 0
+    let h = 0.1
 
     let diff = (Math.sqrt(5) - 1) / 2
     // Inverse of golden ratio for "equal" distribution

@@ -18,7 +18,7 @@
 
 .container::-webkit-scrollbar-thumb {
     background-color: rgba(173, 173, 173, 0.541);  
-    border-radius: 20px;
+    border-radius: 6px;
     border: none;
 }
 
@@ -32,7 +32,7 @@
 
 .title {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.9rem;
     /* text-align: left; */
     width: 100%;
     margin-bottom: 0.75rem;
@@ -42,6 +42,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     line-height: 0.75rem;
+    min-width: 100px;
     text-align: center;
     display: inline-block;
     border-radius: 15px;
@@ -53,12 +54,13 @@
 }
 
 .buttonStyle:hover {
-    filter: brightness(1.025)
+    /* background-color: #def; */
+    filter: brightness(0.98);
 }
 
 .activityButton {
-    background-color: rgb(203, 231, 255);
-    color: rgb(52, 122, 226);
+    background-color: rgb(224, 240, 255);
+    color: rgb(3, 102, 214);
 }
 
 .redButton {
@@ -72,7 +74,7 @@
 }
 
 .disabledButton {
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(245, 245, 245);
     color: rgb(112, 112, 112);
 }
 

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from '../styles/Navigation.module.css'
 import { ReactComponent as LogSkeletonIcon } from '../assets/menu.svg'
-import { ReactComponent as BellIcon } from '../assets/bell.svg'
 import { ReactComponent as CheckmarkIcon } from '../assets/checkmark.svg'
 import { ReactComponent as ErrorIcon } from '../assets/errorCross.svg'
 import { ReactComponent as AddIcon } from '../assets/add.svg'
@@ -59,10 +58,10 @@ const NavigationBar = () => {
             </div>
             <ul className={styles.navContainer}>
                 <LogSkeletonStatus></LogSkeletonStatus>
-                <NavItem
+                {/* <NavItem
                     icon={<BellIcon className={styles.icon} />}>
 
-                </NavItem>
+                </NavItem> */}
                 <NavItem
                     icon={<LogSkeletonIcon className={styles.icon} />}>
                     <DropDown>
@@ -180,7 +179,7 @@ const LogSkeletonStatus = () => {
         return (
             <NavItem icon={<>
                 <ErrorIcon className={styles.checkmark} />
-                {model.logSkeleton.file}
+                {model.config.file}
             </>}>
                 <DropDown>
                     <DropDownTitle>
@@ -188,7 +187,7 @@ const LogSkeletonStatus = () => {
                 </DropDownTitle>
                     <DropDownItem>
                         <span> <ErrorIcon className={styles.checkmark} /> </span>
-                        {model.logSkeleton.errors}
+                        {model.config.errors}
                     </DropDownItem>
                 </DropDown>
             </NavItem>)

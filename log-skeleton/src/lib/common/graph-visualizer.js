@@ -101,11 +101,9 @@ export const runForceGraph = (container) => {
         .select('body')
         .select('#tooltip-div')
         .attr('class', 'tooltip')
-
-    tooltip
-        .append('p')
-        .attr('text', d => 'Hallo')
-        .attr('visibility', 'hidden')
+        .style('left', `0px`)
+            .style('top', `0px`)
+        .style('visibility', 'hidden')
 
     zoomLevel = d3
         .select(container)
@@ -113,6 +111,10 @@ export const runForceGraph = (container) => {
         .style('opactiy', 0)
 
     const clickNode = (event, node) => {
+        if (graph == null || graph.counter[node.activity] == null) {
+            return
+        }
+
         console.log(node);
 
         showToolTip = true
@@ -123,18 +125,16 @@ export const runForceGraph = (container) => {
             .style('top', `${event.pageY + radius}px`)
             .style('visibility', 'visible')
 
-        if (graph != null) {
             console.log(node);
-            tooltip.html(tooltipContent(node, graph.counter[node.name]))
-        }
+            tooltip.html(tooltipContent(node, graph.counter[node.activity]))
     }
 
     // elements for data join
-    link = svg.append("g").selectAll(".link")
-    node = svg.append("g").selectAll(".node")
+    link = svg.select('#links').selectAll(".link")
+    node = svg.select('#links').selectAll(".node")
 
-    circles = svg.selectAll("circles")
-    labels = svg.selectAll("text")
+    circles = node.selectAll("circles")
+    labels = node.selectAll("text")
 
     generateMarkers(svg, radius)
 
@@ -146,7 +146,7 @@ export const runForceGraph = (container) => {
             .strength(function (d) { return -1500; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
-        .velocityDecay(0.75)
+        .velocityDecay(0.8)
 
     //	follow v4 general update pattern
     const update = (g) => {
@@ -159,39 +159,34 @@ export const runForceGraph = (container) => {
         tooltip.style('visibility', visibility)
 
         graph = g
-        // Update link set based on current state
-        // DATA JOIN
-        link = link.data(graph.links);
 
-        // EXIT
-        // Remove old links
-        link.exit().remove();
+        // Remove all the data
+        svg.select('#links').selectAll("g").remove()
+        svg.select('#links').selectAll(".link").remove()
+        svg.select('#links').selectAll(".nodes").remove()
 
         // ENTER
-        // Create new links as needed.	
-        link = link.enter()
+        // Create new links.	
+        link = svg
+            .select('#links')
+            .selectAll(".link")
+            .data(graph.links)
+            .enter()
             .append("line")
             .attr("class", "link")
-            .attr("marker-start", "url(#circle-outline)")
-            .attr("marker-end", "url(#arrowend-outline)")
+            .attr("marker-start", d => d.markerStart != null ? `url(#${d.markerStart})` : null)
+            .attr("marker-end", d => d.markerEnd != null ? `url(#${d.markerEnd})` : null)
             .attr('transform', zoom)
-            .merge(link)
         
         link.append("title").text(d => d.type)
-
-        // DATA JOIN
-        node = node
+    
+        // Add all the nodes
+        node = svg
+            .select('#links')
+            .selectAll(".nodes")
             .data(graph.nodes)
-
-        // EXIT
-        node.exit().remove();
-
-        circles.remove()
-        labels.remove()
-
-        // ENTER
-        node = node
             .enter()
+            // .enter()
             .append("g")
             .on('click', clickNode)
             .call(d3.drag()
@@ -202,20 +197,24 @@ export const runForceGraph = (container) => {
             .attr('transform', zoom)
             .merge(node)
 
+        circles.remove()
             
         circles = node
             .append("circle")
             .merge(circles)
+            // .style('opacity', '0.5')
             .attr("class", "node")
             .attr("r", radius)
             .style("fill", d => d.color)
             // .attr('stroke-width', 5)
             // .attr('stroke', 'transparent')
             
-        circles.exit().remove()
 
         node.append("title")
             .text(d => d.name)
+
+
+        labels.remove()
 
         labels = node
             .append("g")
@@ -224,8 +223,9 @@ export const runForceGraph = (container) => {
             .append("text")
             .text(d => trimString(d.name, 6, false))
             .attr("class", "label")
-            .attr("dy", 5)
+            .attr("dy", d => d.isExtension ? 5 : 3)
             .attr("text-anchor", "middle")
+            .style('font-size', d => d.isExtension ? '16px' : '10px')
         
         //	Set nodes, links, and alpha target for simulation
         simulation
@@ -249,13 +249,15 @@ export const runForceGraph = (container) => {
 
     function dragged(event, d) {
 
-        console.log(zoom);
-        console.log(event);
+        // console.log(zoom);
+        // console.log(event);
 
         d.x = (event.sourceEvent.layerX - zoom.x) / zoom.k
         d.y = (event.sourceEvent.layerY - zoom.y) / zoom.k
 
-        if (currentTooltipNode !== null && d.id === currentTooltipNode.id) {
+        if (currentTooltipNode != null &&
+            currentTooltipNode.id != null &&
+            d.id === currentTooltipNode.id) {
             tooltip
                 .style('left', `${event.sourceEvent.pageX + radius}px`)
                 .style('top', `${event.sourceEvent.pageY + radius}px`)

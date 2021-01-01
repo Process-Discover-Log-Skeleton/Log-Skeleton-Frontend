@@ -39,6 +39,7 @@ const Activities = () => {
 }
 
 const ActivityBox = ({title, callback, toggle}) => {
+    const { activityDisplayName } = useLogSkeleton()
 
     const handleToggle = (event) => {
         callback(title, !toggle)
@@ -49,7 +50,7 @@ const ActivityBox = ({title, callback, toggle}) => {
         <button 
         className={[styles.buttonStyle, toggle ? styles.activityButton : styles.disabledButton].join(' ')}
         onClick={handleToggle}>
-            {trimString(title)}
+            {trimString(activityDisplayName(title))}
         </button>
     )
 }

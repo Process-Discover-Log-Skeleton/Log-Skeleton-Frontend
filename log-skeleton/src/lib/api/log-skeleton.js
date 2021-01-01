@@ -20,12 +20,16 @@ const defaultConfig = {
     id: null,
     // File name
     file: null,
+    // The actual file
+    fileContent: null,
     // Status returned by the backend
     status: null,
     // Potential errors from the backend
     errors: null,
     // Parameters of the LS model
-    parameters: null
+    parameters: {
+        noiseThreshold: 0.0
+    }
 }
 
 const defaultLS = {
@@ -80,6 +84,7 @@ const useProvideLogSkeleton = () => {
 
     // Filter the logSkeleton as soon as it changes
     useEffect(() => {
+        console.log('log skeleton');
         const filtered = filterLogSkelton(logSkeleton.logSkeleton)
 
         setFilteredLogSkeleton(filtered)
@@ -88,16 +93,22 @@ const useProvideLogSkeleton = () => {
 
     // Fetch as soon as something changes in the config
     useEffect(() => {
+        console.log('Id changed')
         // Fetch log skeleton in case a new id was set.
-        if (hasEventLog() && logSkeleton.logSkeleton == null) {
+        if (hasEventLog() && ok() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
         }
         // eslint-disable-next-line
-    }, [config])
+    }, [config.id])
+
+    useEffect(() => {
+        console.log('Noise threshold changed');
+    }, [config.parameters.noiseThreshold])
 
     // Refilter the filteredLogSkeleton
     // as soon as any active items changed.
     useEffect(() => {
+        console.log('active');
         // In case there is no event log
         if (!modelIsLoaded()) {
             return
@@ -111,14 +122,89 @@ const useProvideLogSkeleton = () => {
 
     // Refetch the log skeleton as soons as the forbidden/ required activties change.
     useEffect(() => {
+        console.log('forbidden');
         // In case there is no log id -> return
-        if (!modelIsLoaded()) {
+        if (!modelIsLoaded() || !ok()) {
             return
         }
 
         fetchLogSkeleton()
         // eslint-disable-next-line
     }, [forbiddenActivities, requiredActivities])
+
+
+    const handleEventLogRegistration = async (response, file) => {
+        if (response.ok) { // Response is okay
+            const {id, activities} = await response.json()
+
+            if (!hasEventLog()) {
+                addToast('Registered event-log.', {
+                    appearance: 'success',
+                    autoDismiss: true,
+                })
+            }
+
+            // Set original log skeleton
+            setLogSkeleton({
+                ...defaultLS,
+                activities: activities
+            })
+            
+            // Set config
+            setConfig({
+                ...defaultConfig, // Keep noise threshold
+                id: id,
+                file: file.name,
+                fileContent: file,
+                status: 'ok'
+            })
+
+            setFilteredLogSkeleton({
+                ...defaultLS,
+                activities: activities
+            })
+
+            setActiveActivities(activities)
+
+        } else { // Something is wrong
+            const err = await response.json()
+
+            setConfig({
+                ...config,
+                id: null,
+                file: file.name,
+                fileContent: file,
+                status: 'failure',
+                errors: err.error
+            })
+
+            setLogSkeleton(defaultLS)
+            setFilteredLogSkeleton(defaultLS)
+
+            addToast(err.error, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
+        }
+    }
+
+    const registerExampleEventLog = async () => {
+        try {
+            // Post the event-log to the backend
+            var response = await fetch(`${apiURL}/event-log/example`, {
+                method: 'POST'
+            })
+        } catch (e) {
+            // In case of any errors
+            addToast(e.message, {
+                appearance: 'error',
+                autoDismiss: false,
+            })
+            return
+        }
+
+        await handleEventLogRegistration(response, {name: 'Example'})
+    }
 
     // Api event-log registration
     const registerEventLog = async (file) => {
@@ -140,52 +226,9 @@ const useProvideLogSkeleton = () => {
             })
             return
         }
+ 
+        await handleEventLogRegistration(response, file)
 
-        if (response.ok) { // Response is okay
-            const {id, activities} = await response.json()
-
-            // Set original log skeleton
-            setLogSkeleton({
-                ...defaultLS,
-                activities: activities
-            })
-            
-            // Set config
-            setConfig({
-                id: id,
-                file: file.name,
-                status: 'ok'
-            })
-
-            setFilteredLogSkeleton({
-                ...defaultLS,
-                activities: activities
-            })
-
-            setActiveActivities(activities)
-
-            addToast('Registered event-log.', {
-                appearance: 'success',
-                autoDismiss: true,
-            })
-
-        } else { // Something is wrong
-            const err = await response.json()
-
-            setConfig({
-                ...config,
-                file: file.name,
-                status: 'failure',
-                errors: err.error
-            })
-
-            setLogSkeleton(defaultLS)
-
-            addToast(err.error, {
-                appearance: 'error',
-                autoDismiss: false,
-            })
-        }
     }
 
     // Log Skeleton model fetching
@@ -220,8 +263,16 @@ const useProvideLogSkeleton = () => {
 
             let extension = 'extended-trace=1&'
 
+            let noiseVal = 0.0
+
+            if (!isNaN(config.parameters.noiseThreshold)) {
+                noiseVal = config.parameters.noiseThreshold
+            }
+
+            let noiseThreshold = `noiseThreshold=${noiseVal}`
+
             // Request the Log skeleton model from the backend
-            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}`, {
+            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}${noiseThreshold}`, {
                 method: 'POST'
             })
         } catch (e) {
@@ -232,6 +283,8 @@ const useProvideLogSkeleton = () => {
             })
             return
         }
+
+        console.log(`Code: ${res.status}`);
 
         if (res.ok) { // Response is okay
             const { activities, parameters, model } = await res.json()
@@ -260,15 +313,44 @@ const useProvideLogSkeleton = () => {
             })
 
             setActiveActivities(activities)
+        } else if (res.status === '410') { // Missing resource
+            // At this point potentially the server 
+            // shut down during the session and the 
+            // event log has to get reregistered
+
+            // Check whether an event log is registered locally
+            if (hasEventLog() && config.fileContent != null) {
+                addToast('Ooops! This may take longer than expected.', {
+                    appearance: 'info',
+                    autoDismiss: true,
+                    autoDismissTimeout: 3000
+                })
+
+                registerEventLog(config.fileContent)
+
+                return
+            }
+
+            const err = await res.json()
+            console.log('else');
+
+            failure([err.error])
+
+            setLogSkeleton(defaultLS)
+
+            addToast(err.error, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
         } else { // Something is wrong
             const err = await res.json()
             console.log('else');
 
             failure([err.error])
 
-            setLogSkeleton(null)
+            setLogSkeleton(defaultLS)
 
-            addToast('Session expired', {
+            addToast(err.error, {
                 appearance: 'error',
                 autoDismiss: true,
             })
@@ -298,6 +380,7 @@ const useProvideLogSkeleton = () => {
     }
 
     const modelIsLoaded = () => {
+        console.log(logSkeleton);
         return hasEventLog() && logSkeleton.logSkeleton != null
     }
 
@@ -306,7 +389,7 @@ const useProvideLogSkeleton = () => {
     }
 
     const hasErrors = () => {
-        return !ok() && config.errors != null
+        return !ok() && config.errors !== null
     }
 
     const resetFilteredLogSkeleton = () => {
@@ -314,6 +397,37 @@ const useProvideLogSkeleton = () => {
         setActiveRelationships(relationships)
         setForbiddenActivities([])
         setRequiredActivities([])
+    }
+
+    const activityDisplayName = (activity) => {
+        if (config === null || config.parameters === null) {
+            return activity
+        }
+        if (config.parameters['trace-start'] === null ||
+            config.parameters['trace-end'] === null) {
+                return activity
+            }
+
+        if (activity === config.parameters['trace-start']){
+            return '🚀'
+        }else if (activity === config.parameters['trace-end']) {
+            return '🏁'
+        }
+        return activity
+    }
+
+    const setNoiseThreshold = (value) => {
+        // Wrong type
+        if (isNaN(value) || value > 1 || value < 0) {
+            return
+        }
+        setConfig({
+            ...config,
+            parameters: {
+                ...config.parameters,
+                noiseThreshold: value
+            }
+        })
     }
 
     return {
@@ -328,6 +442,7 @@ const useProvideLogSkeleton = () => {
         setActiveRelationships,
         // setFilteredLogSkeleton, // Sets the filtered log skeleton
         registerEventLog, // Registers a new event log
+        registerExampleEventLog, // Fetch example event log
         resetFilteredLogSkeleton, // Resets the filtered log to the original state
         fetchLogSkeleton, // Fetches the log skeleton model from the api
         hasEventLog, // Returns if an event log is loaded
@@ -336,6 +451,8 @@ const useProvideLogSkeleton = () => {
         hasErrors, // Returns if there are any errors
         modelIsLoaded, // Returns if the model has been loaded from the backend
         setRequiredActivities,
-        setForbiddenActivities
+        setForbiddenActivities,
+        activityDisplayName,
+        setNoiseThreshold
     }
 }

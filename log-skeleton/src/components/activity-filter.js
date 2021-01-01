@@ -79,6 +79,7 @@ const ActivityFilter = (props) =>{
 }
 
 const ListItem = ({title, callback, toggle, colorClass}) =>{
+    const { activityDisplayName } = useLogSkeleton()
 
     const handleToggle = (event) => {
         callback(title, !toggle)
@@ -88,7 +89,7 @@ const ListItem = ({title, callback, toggle, colorClass}) =>{
         <button 
             className={[styles.buttonStyle, toggle ? colorClass : styles.disabledButton].join(' ')}
             onClick={handleToggle}>
-                {trimString(title)}
+                {trimString(activityDisplayName(title))}
         </button>
     );
 

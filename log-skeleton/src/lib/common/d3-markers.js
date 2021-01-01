@@ -35,13 +35,35 @@ export const generateMarkers = (svg, radius) => {
         .style('stroke','black')
         .style('stroke-width', '1')
 
-    // Arrow at the end of the arrow
+    // ----------------------
+    // Always after
+    // ----------------------
 
+    // Always-after start marker
+    // Rect-outline
     svg.append('defs')
         .append('marker')
-        .attr('id', 'arrowend-fill')
+        .attr('id', 'always_after_start')
+        .attr('viewBox', '0 -2.5 5 5')
+        .attr('refX', -radius / 1.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
+        .attr('xoverflow', 'visible')
+        .append('svg:path')
+        .attr('d', 'M 0, -2.5 L 5, -2.5 L 5, 2.5 L 0, 2.5 L 0, -2.5')
+        .attr('fill', '#f4f6f8')
+        .style('stroke','black')
+        .style('stroke-width', '1.5')
+
+    // Arrow end fill
+    // Always-after end
+    svg.append('defs')
+        .append('marker')
+        .attr('id', 'always_after_end')
         .attr('viewBox', '-0 -2.5 5 5')
-        .attr('refX', radius - 1.5)
+        .attr('refX', radius / 1.5 + 2.5)
         .attr('refY', 0)
         .attr('orient', 'auto')
         .attr('markerWidth', 6)
@@ -51,6 +73,84 @@ export const generateMarkers = (svg, radius) => {
         .attr('d', 'M 0,-2.5 L 5 ,0 L 0, 2.5 L 0, -2.5')
         .attr('fill', '#000')
         .style('stroke','none')
+        .style('stroke-width', '1')
+
+    // ----------------------
+    // Always before
+    // ----------------------
+
+    // Arrow end fill
+    // Always-after end
+    const always_before_start = svg.append('defs')
+        .append('marker')
+        .attr('id', 'always_before_start')
+        .attr('viewBox', '-0 -2.5 5 10')
+        .attr('refX', -radius + 3.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 10)
+        .attr('xoverflow', 'visible')
+
+    always_before_start
+        .append('svg:path')
+                   // Trianlge on the bottom
+        .attr('d', 'M 3, 0 L 8 ,-2.5 L 8, 2.5 L 3, 0')
+                //    'M 5 -2.5 L 10 -2.5 L 10 2.5 L 5 2.5' + // Outer rect
+                //    'L 5.5 2 L 9.5 2 L 9.5 -2 L 5.5 -2 L 5.5 2 L 5 2.5  M 0,-2.5') // Inner rect
+        .attr('fill', '#000')
+        .style('stroke','none')
+        .style('stroke-width', 'none')
+        .attr('x', '-2.5')
+        .attr('y', '-2.25')
+
+    always_before_start
+        .append('rect')
+        .attr('width', 4.5)
+        .attr('height', 4.5)
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+        .attr('stroke-width', '0.75px')
+        .attr('x', '-2.3')
+        .attr('y', '-2.25')
+
+    // -------------------
+    // Always before x Always after
+    // -------------------
+    
+    const always_before_combinded = svg.append('defs')
+        .append('marker')
+        .attr('id', 'always_before_combined')
+        .attr('viewBox', '-0 -2.5 5 10')
+        .attr('refX', radius + 3.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 10)
+        .attr('xoverflow', 'visible')
+
+    always_before_combinded
+        .append('svg:path')
+                   // Trianlge on the bottom
+        .attr('d', 'M 0, -2.5 L 5 ,0 L 0, 2.5 L 0, -2.5')
+                //    'M 5 -2.5 L 10 -2.5 L 10 2.5 L 5 2.5' + // Outer rect
+                //    'L 5.5 2 L 9.5 2 L 9.5 -2 L 5.5 -2 L 5.5 2 L 5 2.5  M 0,-2.5') // Inner rect
+        .attr('fill', '#000')
+        .style('stroke','none')
+        .style('stroke-width', 'none')
+        .attr('x', '-2.5')
+        .attr('y', '-2.25')
+
+    always_before_combinded
+        .append('rect')
+        .attr('width', 4.5)
+        .attr('height', 4.5)
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+        .attr('stroke-width', '0.75px')
+        .attr('x', '5')
+        .attr('y', '-2.25')
+
 
     svg.append('defs')
         .append('marker')
@@ -70,31 +170,35 @@ export const generateMarkers = (svg, radius) => {
 
     // Rect for the arrow
 
+    
+    // ----------------------
+    // Never Together
+    // ----------------------
     svg.append('defs')
         .append('marker')
-        .attr('id', 'rect-outline')
+        .attr('id', 'never_together_start')
         .attr('viewBox', '0 -2.5 5 5')
-        .attr('refX', -radius / 1.75)
+        .attr('refX', -radius / 1.5)
         .attr('refY', 0)
         .attr('orient', 'auto')
-        .attr('markerWidth', 6)
-        .attr('markerHeight', 6)
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
         .attr('xoverflow', 'visible')
         .append('svg:path')
         .attr('d', 'M 0, -2.5 L 5, -2.5 L 5, 2.5 L 0, 2.5 L 0, -2.5')
-        .attr('fill', '#f4f6f8')
+        .attr('fill', 'black')
         .style('stroke','black')
         .style('stroke-width', '1')
 
     svg.append('defs')
         .append('marker')
-        .attr('id', 'rect-fill')
+        .attr('id', 'never_together_end')
         .attr('viewBox', '0 -2.5 5 5')
-        .attr('refX', -radius / 1.75)
+        .attr('refX', radius / 1.5 + 5)
         .attr('refY', 0)
         .attr('orient', 'auto')
-        .attr('markerWidth', 6)
-        .attr('markerHeight', 6)
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
         .attr('xoverflow', 'visible')
         .append('svg:path')
         .attr('d', 'M 0, -2.5 L 5, -2.5 L 5, 2.5 L 0, 2.5 L 0, -2.5')
@@ -120,11 +224,14 @@ export const generateMarkers = (svg, radius) => {
         .style('stroke','black')
         .style('stroke-width', '1')
 
+    //-------------------------
+    // Next one way
+    //-------------------------
     svg.append('defs')
         .append('marker')
-        .attr('id', 'circle-outline')
+        .attr('id', 'next_one_way_start')
         .attr('viewBox', '-2.5 -2.5 5 5')
-        .attr('refX', -radius + 4.5)
+        .attr('refX', -radius + 6.5)
         .attr('refY', 0)
         .attr('orient', 'auto')
         .attr('markerWidth', 6)
@@ -136,6 +243,120 @@ export const generateMarkers = (svg, radius) => {
         .style('stroke','black')
         .style('stroke-width', '0.5')
 
+    svg.append('defs')
+        .append('marker')
+        .attr('id', 'next_one_way_end')
+        .attr('viewBox', '-0 -2.5 5 5')
+        .attr('refX', radius / 1.5 + 2.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('xoverflow', 'visible')
+        .append('svg:path')
+        .attr('d', 'M 0,-2.5 L 5 ,0 L 0, 2.5 L 0, -2.5')
+        .attr('fill', '#000')
+        .style('stroke','none')
+        .style('stroke-width', '1')
+
+    svg.append('defs')
+        .append('marker')
+        .attr('id', 'next_one_way_combined')
+        .attr('viewBox', '-2.5 -2.5 5 5')
+        .attr('refX', radius - 6.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('xoverflow', 'visible')
+        .append('circle')
+        .attr('r', 2)
+        .attr('fill', '#f4f6f8')
+        .style('stroke','black')
+        .style('stroke-width', '0.5')
+
+
+    //-------------------------
+    // Next both ways
+    //-------------------------
+    let next_both_ways_start = svg.append('defs')
+        .append('marker')
+        .attr('id', 'next_both_ways_start')
+        .attr('viewBox', '-2.5 -2.5 5 10')
+        .attr('refX', -radius + 4.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 10)
+        .attr('xoverflow', 'visible')
+
+    next_both_ways_start
+        .append('circle')
+        .attr('r', 2)
+        .attr('fill', '#f4f6f8')
+        .style('stroke','black')
+        .style('stroke-width', '0.5')
+
+    next_both_ways_start
+        .append('svg:path')
+                   // Trianlge on the bottom
+        .attr('d', 'M 2.5,0 L 7.5 ,-2.5 L 7.5, 2.5 L 2.5, 0')
+                //    'M 5 -2.5 L 10 -2.5 L 10 2.5 L 5 2.5' + // Outer rect
+                //    'L 5.5 2 L 9.5 2 L 9.5 -2 L 5.5 -2 L 5.5 2 L 5 2.5  M 0,-2.5') // Inner rect
+        .attr('fill', '#000')
+        
+        .style('stroke','none')
+        .style('stroke-width', 'none')
+        .attr('x', '10')
+        .attr('y', '-2.25')
+
+    let next_both_ways_end = svg.append('defs')
+        .append('marker')
+        .attr('id', 'next_both_ways_end')
+        .attr('viewBox', '-2.5 -2.5 5 10')
+        .attr('refX', radius + 3.5)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 10)
+        .attr('xoverflow', 'visible')
+
+    next_both_ways_end
+        .append('circle')
+        .attr('r', 2)
+        .attr('fill', '#f4f6f8')
+        .style('stroke','black')
+        .style('stroke-width', '0.5')
+        .attr('cx', '8')
+
+    next_both_ways_end
+        .append('svg:path')
+                   // Trianlge on the bottom
+        .attr('d', 'M 0, -2.5 L 5 ,0 L 0, 2.5 L 0, -2.5')
+                //    'M 5 -2.5 L 10 -2.5 L 10 2.5 L 5 2.5' + // Outer rect
+                //    'L 5.5 2 L 9.5 2 L 9.5 -2 L 5.5 -2 L 5.5 2 L 5 2.5  M 0,-2.5') // Inner rect
+        .attr('fill', '#000')
+        
+        .style('stroke','none')
+        .style('stroke-width', 'none')
+        .attr('x', '10')
+        .attr('y', '-2.25')
+
+    // let next_both_ways_end = svg.append('defs')
+    //     .append('marker')
+    //     .attr('id', 'next_both_ways_end')
+    //     .attr('viewBox', '-0 -2.5 5 10')
+    //     .attr('refX', radius / 1.5 + 2.5)
+    //     .attr('refY', 0)
+    //     .attr('orient', 'auto')
+    //     .attr('markerWidth', 20)
+    //     .attr('markerHeight', 10)
+    //     .attr('xoverflow', 'visible')
+    //     .append('svg:path')
+    //     .attr('d', 'M 0,-2.5 L 5 ,0 L 0, 2.5 L 0, -2.5')
+    //     .attr('fill', '#000')
+    //     .style('stroke','none')
+    //     .style('stroke-width', '1')
 
 } 
 

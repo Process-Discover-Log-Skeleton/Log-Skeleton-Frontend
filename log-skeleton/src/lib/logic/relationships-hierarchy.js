@@ -1,7 +1,7 @@
 // Check if a relationship contains a pair of activities and return the index if found
 const contains = (relationship, pair) => {
     for(let i = 0, l = relationship.length; i < l; i++){
-        if(relationship[i][0] == pair[0] && relationship[i][1] == pair[1]){
+        if(relationship[i][0] === pair[0] && relationship[i][1] === pair[1]){
             return i;
         }
     }

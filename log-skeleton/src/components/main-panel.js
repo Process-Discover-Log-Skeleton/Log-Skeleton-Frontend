@@ -24,7 +24,7 @@ const MainPanel = () => {
 }
 
 const EmptyLogSkeleton = () => {
-    const { registerEventLog } = useLogSkeleton()
+    const { registerEventLog, registerExampleEventLog } = useLogSkeleton()
     const filePicker = useRef(null)
 
     const loadEventLog = (event) => {
@@ -38,6 +38,10 @@ const EmptyLogSkeleton = () => {
         registerEventLog(file[0])
     }
 
+    const onExample = (event) => {
+        registerExampleEventLog()
+    }
+
     return (
         <div className={styles.emptyContainer}>
             <div className={styles.eventLogContent}>
@@ -47,7 +51,13 @@ const EmptyLogSkeleton = () => {
                 <button
                     className={styles.noEventLogButton}
                     onClick={loadEventLog}>
-                    Load event log</button>
+                    Load event log file</button>
+
+                <button
+                    className={styles.exampleButton}
+                    onClick={onExample}>
+                    Use example event log
+                </button>
             </div>
         </div>
     );
