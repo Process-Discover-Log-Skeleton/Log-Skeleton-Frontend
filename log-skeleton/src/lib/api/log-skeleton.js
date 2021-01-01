@@ -313,7 +313,7 @@ const useProvideLogSkeleton = () => {
             })
 
             setActiveActivities(activities)
-        } else if (res.status == '410') { // Missing resource
+        } else if (res.status === '410') { // Missing resource
             // At this point potentially the server 
             // shut down during the session and the 
             // event log has to get reregistered
@@ -389,7 +389,7 @@ const useProvideLogSkeleton = () => {
     }
 
     const hasErrors = () => {
-        return !ok() && config.errors != null
+        return !ok() && config.errors !== null
     }
 
     const resetFilteredLogSkeleton = () => {
@@ -400,17 +400,17 @@ const useProvideLogSkeleton = () => {
     }
 
     const activityDisplayName = (activity) => {
-        if (config == null || config.parameters == null) {
+        if (config === null || config.parameters === null) {
             return activity
         }
-        if (config.parameters['trace-start'] == null ||
-            config.parameters['trace-end'] == null) {
+        if (config.parameters['trace-start'] === null ||
+            config.parameters['trace-end'] === null) {
                 return activity
             }
 
-        if (activity == config.parameters['trace-start']){
+        if (activity === config.parameters['trace-start']){
             return '🚀'
-        }else if (activity == config.parameters['trace-end']) {
+        }else if (activity === config.parameters['trace-end']) {
             return '🏁'
         }
         return activity

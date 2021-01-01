@@ -8,15 +8,15 @@ const Slider = () =>{
     const noiseThreshold = config.parameters.noiseThreshold
 
     //TODO: set initial noise (from the model)
-    const [ value, setValue ] = React.useState(0.0);
+    // const [ value, setValue ] = React.useState(0.0);
 
-    const setIfValid = (value) =>{
-        if(!isNaN(value) && value>=0 && value <= 1 && value!==""){
-            //TODO: set noise threshold here (value)
-            setNoiseThreshold(value)
-        }
-        setValue(value)
-    }
+    // const setIfValid = (value) =>{
+    //     if(!isNaN(value) && value>=0 && value <= 1 && value!==""){
+    //         //TODO: set noise threshold here (value)
+    //         setNoiseThreshold(value)
+    //     }
+    //     setValue(value)
+    // }
 
     return (
         <div className={styles.container}>

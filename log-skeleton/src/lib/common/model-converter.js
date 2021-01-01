@@ -15,8 +15,8 @@ const combineRelationship = (edges, rel1, rel2, marker, start) => {
         // Filter for oposite edges
         const second = edges.filter(e => {
             return e.type === rel2 &&
-                   e.source == edge.target &&
-                   e.target == edge.source
+                   e.source === edge.target &&
+                   e.target === edge.source
         })
     
         if (second.length > 0) {
@@ -31,9 +31,9 @@ const combineRelationship = (edges, rel1, rel2, marker, start) => {
                 return !second.includes(item)
             })
     
-            if (start == 0)
+            if (start === 0)
                 edge.markerStart = marker
-            else if (start == 1)
+            else if (start === 1)
                 edge.markerEnd = marker
             else {
                 edge.markerStart = marker + '_start'
@@ -84,10 +84,10 @@ export const graphConverter = (logSkeleton, activities, start, end) => {
         let name = item
         let isExtension = false
 
-        if (name == start){
+        if (name === start){
             name = '🚀'
             isExtension = true
-        } else if (name == end) {
+        } else if (name === end) {
             name = '🏁'
             isExtension = true
         }

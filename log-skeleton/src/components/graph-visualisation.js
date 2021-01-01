@@ -37,7 +37,7 @@ const GraphVisualizer = () => {
 
         updateGraph(graph)
 
-      }, [model.filteredLogSkeleton])
+      }, [model.filteredLogSkeleton, model.config.parameters])
 
     return (
         <div ref={node}
