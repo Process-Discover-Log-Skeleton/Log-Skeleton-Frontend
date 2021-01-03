@@ -33,6 +33,7 @@ const Relationships = () => {
                     relationships.map(relationship => {
                         return (
                             <RelationshipsBox
+                                key={relationship}
                                 title={relationship}
                                 callback={handleRelationshipToggle}
                                 toggle={model.activeRelationships.includes(relationship)}/>

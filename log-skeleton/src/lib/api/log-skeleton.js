@@ -84,7 +84,6 @@ const useProvideLogSkeleton = () => {
 
     // Filter the logSkeleton as soon as it changes
     useEffect(() => {
-        console.log('log skeleton');
         const filtered = filterLogSkelton(logSkeleton.logSkeleton)
 
         setFilteredLogSkeleton(filtered)
@@ -93,7 +92,6 @@ const useProvideLogSkeleton = () => {
 
     // Fetch as soon as something changes in the config
     useEffect(() => {
-        console.log('Id changed')
         // Fetch log skeleton in case a new id was set.
         if (hasEventLog() && ok() && logSkeleton.logSkeleton == null) {
             fetchLogSkeleton()
@@ -101,14 +99,9 @@ const useProvideLogSkeleton = () => {
         // eslint-disable-next-line
     }, [config.id])
 
-    useEffect(() => {
-        console.log('Noise threshold changed');
-    }, [config.parameters.noiseThreshold])
-
     // Refilter the filteredLogSkeleton
     // as soon as any active items changed.
     useEffect(() => {
-        console.log('active');
         // In case there is no event log
         if (!modelIsLoaded()) {
             return
@@ -122,7 +115,6 @@ const useProvideLogSkeleton = () => {
 
     // Refetch the log skeleton as soons as the forbidden/ required activties change.
     useEffect(() => {
-        console.log('forbidden');
         // In case there is no log id -> return
         if (!modelIsLoaded() || !ok()) {
             return
@@ -232,7 +224,8 @@ const useProvideLogSkeleton = () => {
     }
 
     // Log Skeleton model fetching
-    const fetchLogSkeleton = async () => {
+    const fetchLogSkeleton = async (noiseThreshold = null) => {
+
         let id = config.id
 
         // There is no id
@@ -242,6 +235,10 @@ const useProvideLogSkeleton = () => {
                 autoDismiss: true,
             })
             return
+        }
+
+        if (noiseThreshold === null) {
+            noiseThreshold = config.parameters.noiseThreshold
         }
 
         console.log('Fetching log skeleton')
@@ -263,16 +260,10 @@ const useProvideLogSkeleton = () => {
 
             let extension = 'extended-trace=1&'
 
-            let noiseVal = 0.0
-
-            if (!isNaN(config.parameters.noiseThreshold)) {
-                noiseVal = config.parameters.noiseThreshold
-            }
-
-            let noiseThreshold = `noiseThreshold=${noiseVal}`
+            let noise = `noiseThreshold=${noiseThreshold}`
 
             // Request the Log skeleton model from the backend
-            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}${noiseThreshold}`, {
+            var res = await fetch(`${apiURL}/log-skeleton/${id}?${extension}${forbidden}${required}${noise}`, {
                 method: 'POST'
             })
         } catch (e) {
@@ -284,26 +275,24 @@ const useProvideLogSkeleton = () => {
             return
         }
 
-        console.log(`Code: ${res.status}`);
-
         if (res.ok) { // Response is okay
             const { activities, parameters, model } = await res.json()
-            console.log(activities);
-            console.log(model);
-            console.log(parameters);
+            // console.log(activities);
+            // console.log(model);
+            // console.log(parameters);
 
             // Something must be wrong
             // -> Just for safety since setting the logSkeleton with an null object 
             //    after the API call would cause an infite API call loop.
             if (model == null) {
                 failure(['Something is wrong!'])
-                console.log('null');
                 return
             }
 
             setLogSkeleton({
                 activities: activities,
-                logSkeleton: model
+                logSkeleton: model,
+                parameters: parameters
             })
 
             setConfig({
@@ -332,7 +321,6 @@ const useProvideLogSkeleton = () => {
             }
 
             const err = await res.json()
-            console.log('else');
 
             failure([err.error])
 
@@ -344,7 +332,6 @@ const useProvideLogSkeleton = () => {
             })
         } else { // Something is wrong
             const err = await res.json()
-            console.log('else');
 
             failure([err.error])
 
@@ -380,7 +367,6 @@ const useProvideLogSkeleton = () => {
     }
 
     const modelIsLoaded = () => {
-        console.log(logSkeleton);
         return hasEventLog() && logSkeleton.logSkeleton != null
     }
 

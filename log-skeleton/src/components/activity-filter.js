@@ -64,7 +64,8 @@ const ActivityFilter = (props) =>{
             <div className={styles.contentContainer}>
                 {props.source.map(item=>{
                     return(
-                        <ListItem 
+                        <ListItem
+                            key={item}
                             title={item}
                             callback={props.callback}
                             colorClass={props.colorClass}

@@ -2,6 +2,8 @@
     height: calc(100% - 60px);
     width: 100%;
     display: grid;
+    overflow: hidden;
+    margin: 0;
     grid-template-columns: min(15%, 300px) auto min(15%, 300px);
     grid-template-rows: 100%;
 }
@@ -36,6 +38,7 @@
     }
 }
 
+/* Very small screens */
 @media only screen and (max-width: 1000px) {
     .content {
         grid-template-columns: 25% auto 25%;
