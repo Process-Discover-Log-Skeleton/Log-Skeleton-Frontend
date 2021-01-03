@@ -17,6 +17,8 @@
     font-weight: 600;
     fill: white;
     cursor: pointer;
+    min-width: 40;
+    min-height: 40;
     /* filter: drop-shadow( 3px 0px 10px rgb(255, 255, 255)); */
     /* text-shadow: 0px 0px 10px rgb(156, 156, 156); */
 }
@@ -63,14 +65,11 @@ text {
 .tooltip {
     position: absolute;
     text-align: center;
-    /* overflow: scroll; */
     z-index: 10;
     min-width: 110px;
     padding: 10px;
     font: 12px sans-serif;
-    /* background: white; */
-    backdrop-filter: blur(40px);
-    /* border: 1px var(--border-color) solid; */
+    background-color: rgba(255, 255, 255, .9);
     border-radius: 8px;
     pointer-events: none;
     box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
@@ -106,6 +105,19 @@ text {
   transition: opacity 300ms ease-in-out;
   padding: 10px;
   border-radius: 5px;
-  backdrop-filter: blur(100px);
+  background-color: rgba(255, 255, 255, .95);
   pointer-events: none;
+}
+
+
+@supports ((backdrop-filter: blur(40px))) {
+  .tooltip {
+    background-color: transparent;
+    backdrop-filter: blur(40px);
+  }
+
+  #zoomLevel {
+    background-color: transparent;
+    backdrop-filter: blur(100px);
+  }
 }

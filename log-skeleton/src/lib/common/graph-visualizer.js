@@ -183,7 +183,7 @@ export const runForceGraph = (container) => {
             .attr("marker-end", d => d.markerEnd != null ? `url(#${d.markerEnd})` : null)
             .attr('transform', zoom)
         
-        link.append("title").text(d => d.type)
+        // link.append("title").text(d => d.type)
     
         // Add all the nodes
         node = svg
@@ -205,12 +205,8 @@ export const runForceGraph = (container) => {
         circles.remove()
             
         circles = node
-            // .append("g")
-
-        // circles
             .append("circle")
             .merge(circles)
-            // .style('opacity', '0.5')
             .attr("class", "node")
             .attr("r", radius)
             .style("fill", d => d.color)
@@ -223,9 +219,6 @@ export const runForceGraph = (container) => {
         labels.remove()
 
         labels = node
-        //     .append("g")
-
-        // labels
             .append("text")
             .text(d => trimString(d.name, 6, false))
             .attr("class", "label")
@@ -259,7 +252,7 @@ export const runForceGraph = (container) => {
 
         d.x = (event.sourceEvent.layerX - zoom.x) / zoom.k
         d.y = (event.sourceEvent.layerY - zoom.y) / zoom.k
-        
+
         if (currentTooltipNode != null &&
             currentTooltipNode.id != null &&
             d.id === currentTooltipNode.id) {
