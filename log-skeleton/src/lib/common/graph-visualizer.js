@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import { text } from 'd3';
 import { generateMarkers } from './d3-markers';
 import { trimString } from './trim-strings';
 
@@ -85,8 +86,12 @@ export const runForceGraph = (container) => {
             zoom = event.transform
             zoomLevel.style('opacity', 1)
             zoomLevel.html(`${(zoom.k * 100).toFixed(1)}%`)
+            // svg.attr('transform', event.transform)
             node.attr("transform", event.transform)
             link.attr("transform", event.transform)
+            // circles.selectAll('circles').attr("transform", event.transform)
+            // labels.selectAll('circles').attr("transform", event.transform)
+
         })
         .on("end", (event) => {
             setTimeout(() => {
@@ -143,7 +148,7 @@ export const runForceGraph = (container) => {
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -1500; }))
+            .strength(function (d) { return -2000; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
         .velocityDecay(0.8)
@@ -189,26 +194,27 @@ export const runForceGraph = (container) => {
             // .enter()
             .append("g")
             .on('click', clickNode)
+            .attr('transform', zoom)
+            .merge(node)
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended)
             )
-            .attr('transform', zoom)
-            .merge(node)
 
         circles.remove()
             
         circles = node
+            // .append("g")
+
+        // circles
             .append("circle")
             .merge(circles)
             // .style('opacity', '0.5')
             .attr("class", "node")
             .attr("r", radius)
             .style("fill", d => d.color)
-            // .attr('stroke-width', 5)
-            // .attr('stroke', 'transparent')
-            
+            .style("pointer-events", "none")
 
         node.append("title")
             .text(d => d.name)
@@ -217,14 +223,16 @@ export const runForceGraph = (container) => {
         labels.remove()
 
         labels = node
-            .append("g")
+        //     .append("g")
 
-        labels
+        // labels
             .append("text")
             .text(d => trimString(d.name, 6, false))
             .attr("class", "label")
             .attr("dy", d => d.isExtension ? 5 : 3)
             .attr("text-anchor", "middle")
+            .attr('width', 2 * radius)
+            .attr('height', 2 * radius)
             .style('font-size', d => d.isExtension ? '16px' : '10px')
         
         //	Set nodes, links, and alpha target for simulation
@@ -249,12 +257,9 @@ export const runForceGraph = (container) => {
 
     function dragged(event, d) {
 
-        // console.log(zoom);
-        // console.log(event);
-
         d.x = (event.sourceEvent.layerX - zoom.x) / zoom.k
         d.y = (event.sourceEvent.layerY - zoom.y) / zoom.k
-
+        
         if (currentTooltipNode != null &&
             currentTooltipNode.id != null &&
             d.id === currentTooltipNode.id) {
@@ -270,32 +275,22 @@ export const runForceGraph = (container) => {
         
     }
 
-    function clipX(x) {
-        return x
-        // return Math.max(radius * 1.5, Math.min(width - radius * 1.5, x))
-    }
-
-    function clipY(y) {
-        return y
-        // return Math.max(radius * 2.5, Math.min(height - radius * 2.5, y))
-    }
-
     //	tick event handler (nodes bound to container)
     function ticked() {
         link
-            .attr("x1", function (d) { return clipX(d.source.x) })
-            .attr("y1", function (d) { return clipY(d.source.y) })
-            .attr("x2", function (d) { return clipX(d.target.x) })
-            .attr("y2", function (d) { return clipY(d.target.y) })
+            .attr("x1", function (d) { return d.source.x })
+            .attr("y1", function (d) { return d.source.y })
+            .attr("x2", function (d) { return d.target.x })
+            .attr("y2", function (d) { return d.target.y })
 
         node.selectAll("circle")
-            .attr("cx", function(d) { return d.x = clipX(d.x) })
-            .attr("cy", function(d) { return d.y = clipY(d.y) })
+            .attr("cx", function(d) { return d.x })
+            .attr("cy", function(d) { return d.y })
 
-        labels
+        node
             .selectAll("text")
-            .attr("x", function(d) { return d.x = clipX(d.x) })
-            .attr("y", function(d) { return d.y = clipY(d.y) })
+            .attr("x", function(d) { return d.x })
+            .attr("y", function(d) { return d.y })
 
     }
 
