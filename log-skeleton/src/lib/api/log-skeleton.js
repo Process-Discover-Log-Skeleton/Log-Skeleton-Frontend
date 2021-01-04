@@ -238,7 +238,7 @@ const useProvideLogSkeleton = () => {
         }
 
         if (noiseThreshold === null) {
-            noiseThreshold = config.parameters.noiseThreshold
+            noiseThreshold = 0.0
         }
 
         console.log('Fetching log skeleton')
@@ -381,6 +381,7 @@ const useProvideLogSkeleton = () => {
     const resetFilteredLogSkeleton = () => {
         setActiveActivities(logSkeleton.activities)
         setActiveRelationships(relationships)
+        setNoiseThreshold(0.0)
         setForbiddenActivities([])
         setRequiredActivities([])
     }

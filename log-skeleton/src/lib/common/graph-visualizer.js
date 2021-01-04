@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import { text } from 'd3';
 import { generateMarkers } from './d3-markers';
 import { trimString } from './trim-strings';
 

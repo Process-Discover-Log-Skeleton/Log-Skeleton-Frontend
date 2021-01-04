@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from "../styles/SidePanel.module.css";
 import RangeSlider from 'react-bootstrap-range-slider';
 
 const Slider = () =>{
-    const { fetchLogSkeleton } = useLogSkeleton()
+    const { config, fetchLogSkeleton } = useLogSkeleton()
 
     //TODO: set initial noise (from the model)
     const [ value, setValue ] = useState(0.0);
+
+    useEffect(() => {
+        setValue(config.parameters.noiseThreshold)
+    }, [config.parameters.noiseThreshold])
 
     return (
         <div className={styles.container}>
