@@ -26,7 +26,8 @@ const Activities = () => {
                 {
                     activities.map( activity => {
                         return (
-                            <ActivityBox 
+                            <ActivityBox
+                                key={activity}
                                 title={activity}
                                 callback={handleActivityToggle}
                                 toggle={model.activeActivities.includes(activity)}/>

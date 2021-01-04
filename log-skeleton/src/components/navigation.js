@@ -37,7 +37,6 @@ const NavigationBar = () => {
 
 
     useEffect(() => {
-        console.log('effect ' + showMenu)
         if (showMenu) {
             document.addEventListener('click', closeMenu)
         } else {
@@ -58,10 +57,6 @@ const NavigationBar = () => {
             </div>
             <ul className={styles.navContainer}>
                 <LogSkeletonStatus></LogSkeletonStatus>
-                {/* <NavItem
-                    icon={<BellIcon className={styles.icon} />}>
-
-                </NavItem> */}
                 <NavItem
                     icon={<LogSkeletonIcon className={styles.icon} />}>
                     <DropDown>

@@ -66,8 +66,6 @@ export const graphConverter = (logSkeleton, activities, start, end) => {
 
     const reducedLogSkeleton = relationshipsHierarchy(logSkeleton)
 
-    console.log(reducedLogSkeleton);
-
     let graph = {
         nodes: [],
         links: []
@@ -139,9 +137,6 @@ export const graphConverter = (logSkeleton, activities, start, end) => {
 
         edges = edges.concat(ed)
     }
-
-    console.log(edges);
-
 
     graph.links = reduceEdges(edges)
     graph.counter = logSkeleton['counter']

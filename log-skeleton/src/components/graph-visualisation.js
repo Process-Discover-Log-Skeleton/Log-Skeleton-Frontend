@@ -33,8 +33,6 @@ const GraphVisualizer = () => {
                                    model.config.parameters['trace-start'],
                                    model.config.parameters['trace-end'])
         
-        console.log(graph);
-
         updateGraph(graph)
 
       }, [model.filteredLogSkeleton, model.config.parameters])
