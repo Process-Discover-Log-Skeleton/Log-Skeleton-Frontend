@@ -304,15 +304,10 @@ const useProvideLogSkeleton = () => {
             })
 
             setActiveActivities(activities)
-        // eslint-disable-next-line
-        } else if (res.status == '410') { // Missing resource
+        } else if (res.status === 410) { // Missing resource
             // At this point potentially the server 
             // shut down during the session and the 
             // event log has to get reregistered
-
-            console.log('410');
-            console.log(hasEventLog());
-            console.log(config);
 
             // Check whether an event log is registered locally
             if (hasEventLog() && config.fileContent != null) {
@@ -424,6 +419,13 @@ const useProvideLogSkeleton = () => {
         })
     }
 
+    const setCSVColumns = (items) => {
+        setConfig ({
+            ...config,
+            csvOptions: items
+        })
+    }
+
     return {
         logSkeleton, // The model object
         filteredLogSkeleton,
@@ -447,6 +449,7 @@ const useProvideLogSkeleton = () => {
         setRequiredActivities,
         setForbiddenActivities,
         activityDisplayName,
-        setNoiseThreshold
+        setNoiseThreshold,
+        setCSVColumns
     }
 }

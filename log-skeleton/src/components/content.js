@@ -6,14 +6,22 @@ import Activities from './activities'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import { RequiredActivities, ForbiddenActivities } from "./activity-filter";
 import Slider from './noise-threshold'
+import { CSVColumnPicker } from './csv-coloumn'
 
 const Content = () => {
-    const { modelIsLoaded } = useLogSkeleton()
-    
+    const { modelIsLoaded, config } = useLogSkeleton()
+
+    const showCSVPicker = config.csvOptions != null
+
     if (!modelIsLoaded()) {
         return (
             <div className={styles.emptyContent}>
                 <div className={styles.midPanel}>
+                {
+                    showCSVPicker ? 
+                    <CSVColumnPicker 
+                        columns={config.csvOptions}/> : <></>
+                }
                     <MainPanel></MainPanel>
                 </div>
             </div>
@@ -22,6 +30,11 @@ const Content = () => {
 
     return (
         <div className={styles.content}>
+            {
+                showCSVPicker ? 
+                <CSVColumnPicker 
+                    columns={config.csvOptions}/> : <></>
+            }
             <div className={styles.sidePanel}>
                 <RequiredActivities></RequiredActivities>
                 <ForbiddenActivities></ForbiddenActivities>

@@ -1,0 +1,43 @@
+.container {
+    margin: 0px;
+    z-index: 50;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 60px);
+    position: absolute;
+}
+
+.title {
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.content {
+    margin: auto;
+    padding: 3em 4rem;
+    background-color: white;
+    border: 1px var(--border-color) solid;
+    border-radius: 6px;
+}
+
+.selection {
+    width: 100%;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.submit {
+    background-color: rgb(68, 163, 68);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 2px rgb(45, 138, 45) solid;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: filter 300ms;
+}
