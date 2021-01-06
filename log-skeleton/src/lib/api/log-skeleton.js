@@ -275,6 +275,8 @@ const useProvideLogSkeleton = () => {
             return
         }
 
+        console.log(res.status)
+
         if (res.ok) { // Response is okay
             const { activities, parameters, model } = await res.json()
             // console.log(activities);
@@ -302,10 +304,15 @@ const useProvideLogSkeleton = () => {
             })
 
             setActiveActivities(activities)
-        } else if (res.status === '410') { // Missing resource
+        // eslint-disable-next-line
+        } else if (res.status == '410') { // Missing resource
             // At this point potentially the server 
             // shut down during the session and the 
             // event log has to get reregistered
+
+            console.log('410');
+            console.log(hasEventLog());
+            console.log(config);
 
             // Check whether an event log is registered locally
             if (hasEventLog() && config.fileContent != null) {

@@ -20,8 +20,8 @@ const Slider = () =>{
                 <RangeSlider
                     className={styles.slider}
                     min = {0}
-                    max = {1}
-                    step = {0.05}
+                    max = {0.5}
+                    step = {0.01}
                     value={value}
                     tooltipLabel={currentValue => `${Math.floor((currentValue * 100))}%`}
                     tooltip='on'
