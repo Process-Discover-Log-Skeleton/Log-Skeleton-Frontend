@@ -27,6 +27,7 @@ export const CSVColumnPicker = ({columns}) => {
     return (
         <div className={styles.container}>
             <div className={styles.content}>
+                
                 <div className={styles.title}>Pick the event identifier</div>
                 <select 
                     className={styles.selection}
@@ -36,6 +37,7 @@ export const CSVColumnPicker = ({columns}) => {
                         columns.map(item => {
                             return (
                                 <option
+                                    key={item}
                                     value={item}>
                                         {item}
                                 </option>
@@ -53,6 +55,7 @@ export const CSVColumnPicker = ({columns}) => {
                         columns.map(item => {
                             return (
                                 <option
+                                    key={item}
                                     value={item}>
                                         {item}
                                 </option>

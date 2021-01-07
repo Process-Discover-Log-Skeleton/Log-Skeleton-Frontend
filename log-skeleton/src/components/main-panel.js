@@ -36,6 +36,7 @@ const EmptyLogSkeleton = () => {
 
     const loadEventLog = (event) => {
         event.preventDefault()
+        filePicker.current.value = null
         filePicker.current.click()
     }
 
@@ -44,7 +45,7 @@ const EmptyLogSkeleton = () => {
 
         // CSV File
         if (file[0] !== null && file[0].name.endsWith('csv')) {
-            
+
             extractCSVColumns(file[0], (csv, err) => {
                 if (err !== null) {
                     // Something is wrong
@@ -80,7 +81,11 @@ const EmptyLogSkeleton = () => {
             <div className={styles.eventLogContent}>
                 <LogSkeletonIcon width="70" height="70" stroke="black"></LogSkeletonIcon>
                 <span className={styles.noEventLogTitle}>Load your event log to get started!</span>
-                <input type="file" ref={filePicker} style={{ display: "none" }} onChange={onLoad} />
+                <input 
+                    type="file" 
+                    ref={filePicker}
+                    style={{ display: "none" }} 
+                    onChange={onLoad} />
                 <button
                     className={styles.noEventLogButton}
                     onClick={loadEventLog}>

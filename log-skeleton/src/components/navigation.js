@@ -75,6 +75,7 @@ const NavigationBar = () => {
     }, [showMenu])
 
     const handleNewEventLog = () => {
+        filePicker.current.value = null
         filePicker.current.click()
     }
 

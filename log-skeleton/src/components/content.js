@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '../styles/Content.module.css'
 import MainPanel from '../components/main-panel'
 import Relationships from './relationships'
@@ -11,18 +11,18 @@ import { CSVColumnPicker } from './csv-coloumn'
 const Content = () => {
     const { modelIsLoaded, config } = useLogSkeleton()
 
-    var showCSVPicker = config.csvOptions != null
+    var [showCSVPicker, setShowPicker] = useState(config.csvOptions != null)
 
     useEffect(() => {
-        showCSVPicker = config.csvOptions != null
-    }, [config])
+        setShowPicker(config.csvOptions !== null)
+    }, [config.csvOptions])
 
     if (!modelIsLoaded()) {
         return (
             <div className={styles.emptyContent}>
                 <div className={styles.midPanel}>
                 {
-                    showCSVPicker ? 
+                    showCSVPicker && config.csvOptions !== null ? 
                     <CSVColumnPicker 
                         columns={config.csvOptions}/> : <></>
                 }
@@ -35,7 +35,7 @@ const Content = () => {
     return (
         <div className={styles.content}>
             {
-                showCSVPicker ? 
+                showCSVPicker && config.csvOptions !== null ? 
                 <CSVColumnPicker 
                     columns={config.csvOptions}/> : <></>
             }
