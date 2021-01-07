@@ -10,18 +10,22 @@
     position: absolute;
 }
 
-.title {
-    color: black;
-    font-size: 1.1rem;
-    font-weight: 600;
+.contentContainer {
+    margin: auto;
+
 }
 
 .content {
-    margin: auto;
     padding: 3em 4rem;
     background-color: white;
     border: 1px var(--border-color) solid;
     border-radius: 6px;
+}
+
+.title {
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .selection {
@@ -41,4 +45,11 @@
     font-size: 0.85rem;
     font-weight: 600;
     transition: filter 300ms;
+}
+
+.dismiss {
+    float: right;
+    background-color: transparent;
+    border: none;
+
 }
