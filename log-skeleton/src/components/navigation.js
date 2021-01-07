@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useLogSkeleton } from '../lib/api/log-skeleton'
 import styles from '../styles/Navigation.module.css'
+import { extractCSVColumns } from '../lib/common/csv-columns'
+import { useToasts } from 'react-toast-notifications'
 import { ReactComponent as LogSkeletonIcon } from '../assets/menu.svg'
 import { ReactComponent as CheckmarkIcon } from '../assets/checkmark.svg'
 import { ReactComponent as ErrorIcon } from '../assets/errorCross.svg'
@@ -13,6 +15,8 @@ const NavigationBar = () => {
     const filePicker = useRef(null)
     const [showMenu, setShowMenu] = useState(null)
 
+    const { addToast } = useToasts()
+
     function closeMenu(event) {
         console.log(dropDown)
         // if (dropDown.current.childNodes.length != 0 && !dropDown.current.contains(event.target)) {
@@ -23,6 +27,32 @@ const NavigationBar = () => {
 
     const onLoad = (event) => {
         const file = event.target.files
+
+        // CSV File
+        if (file[0] !== null && file[0].name.endsWith('csv')) {
+            
+            extractCSVColumns(file[0], (csv, err) => {
+                if (err !== null) {
+                    // Something is wrong
+                    // ->> Notify user
+                    addToast('Cannot read CSV file.', {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
+
+                    return
+                }
+
+                // Set the config
+                // ->> This will trigger the CSV-Picker to show.
+                logSkeleton.setConfig({
+                    ...logSkeleton.config,
+                    csvOptions: csv,
+                    fileContent: file[0]
+                })
+            })
+            return
+        }
 
         logSkeleton.registerEventLog(file[0])
     }

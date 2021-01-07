@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from '../styles/Content.module.css'
 import MainPanel from '../components/main-panel'
 import Relationships from './relationships'
@@ -11,7 +11,11 @@ import { CSVColumnPicker } from './csv-coloumn'
 const Content = () => {
     const { modelIsLoaded, config } = useLogSkeleton()
 
-    const showCSVPicker = config.csvOptions != null
+    var showCSVPicker = config.csvOptions != null
+
+    useEffect(() => {
+        showCSVPicker = config.csvOptions != null
+    }, [config])
 
     if (!modelIsLoaded()) {
         return (

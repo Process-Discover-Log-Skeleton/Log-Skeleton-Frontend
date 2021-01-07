@@ -29,7 +29,8 @@ const defaultConfig = {
     // Parameters of the LS model
     parameters: {
         noiseThreshold: 0.0
-    }
+    },
+    csvOptions: null
 }
 
 const defaultLS = {
@@ -199,14 +200,20 @@ const useProvideLogSkeleton = () => {
     }
 
     // Api event-log registration
-    const registerEventLog = async (file) => {
+    const registerEventLog = async (file, eventID = null, caseID = null) => {
         // Attach the file to a FormData
         const fd = new FormData()
         fd.append('file', file)
 
+        var csvField = ''
+
+        if (eventID != null && caseID != null) {
+            csvField = `event-id=${eventID}&case-id=${caseID}`
+        }
+
         try {
             // Post the event-log to the backend
-            var response = await fetch(`${apiURL}/event-log`, {
+            var response = await fetch(`${apiURL}/event-log?${csvField}`, {
                 method: 'POST',
                 body: fd
             })
@@ -450,6 +457,7 @@ const useProvideLogSkeleton = () => {
         setForbiddenActivities,
         activityDisplayName,
         setNoiseThreshold,
-        setCSVColumns
+        setCSVColumns,
+        setConfig
     }
 }

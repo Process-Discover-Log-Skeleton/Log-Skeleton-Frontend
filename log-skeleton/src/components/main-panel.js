@@ -3,7 +3,6 @@ import { ReactComponent as LogSkeletonIcon } from '../assets/logSkeleton.svg'
 import styles from '../styles/MainPanel.module.css'
 import { useRef } from 'react'
 import GraphVisualizer from './graph-visualisation'
-import { CSVColumnPicker } from './csv-coloumn'
 import { extractCSVColumns } from '../lib/common/csv-columns'
 import { useToasts } from 'react-toast-notifications'
 
@@ -27,7 +26,11 @@ const MainPanel = () => {
 }
 
 const EmptyLogSkeleton = () => {
-    const { registerEventLog, registerExampleEventLog, setCSVColumns } = useLogSkeleton()
+    const { config, 
+            registerEventLog, 
+            registerExampleEventLog, 
+            setConfig } = useLogSkeleton()
+
     const filePicker = useRef(null)
     const { addToast } = useToasts()
 
@@ -41,6 +44,7 @@ const EmptyLogSkeleton = () => {
 
         // CSV File
         if (file[0] !== null && file[0].name.endsWith('csv')) {
+            
             extractCSVColumns(file[0], (csv, err) => {
                 if (err !== null) {
                     // Something is wrong
@@ -55,7 +59,11 @@ const EmptyLogSkeleton = () => {
 
                 // Set the config
                 // ->> This will trigger the CSV-Picker to show.
-                setCSVColumns(csv)
+                setConfig({
+                    ...config,
+                    csvOptions: csv,
+                    fileContent: file[0]
+                })
             })
             return
         }
