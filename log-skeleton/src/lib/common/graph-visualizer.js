@@ -57,6 +57,9 @@ export const runForceGraph = (container) => {
     const width = containerRect.width
     const height = containerRect.height
 
+    zoom = d3.zoomIdentity
+    showToolTip = false
+
     const hideTooltip = () =>  {
         currentTooltipNode = null
         showToolTip = false
