@@ -24,7 +24,7 @@
 
 .title {
     color: black;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -52,4 +52,25 @@
     background-color: transparent;
     border: none;
 
+}
+
+.caseInput {
+    height: 1rem;
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: white;
+    border-radius: 6px;
+    border: 2px var(--border-color) solid;
+    margin: 15px auto;
+    width: 100%;
+}
+
+.caseInput:focus {
+    border: 2px rgb(3, 102, 214) solid;
+}
+
+.subTitle {
+    font-size: 0.7rem;
+    margin-bottom: 10px;
 }

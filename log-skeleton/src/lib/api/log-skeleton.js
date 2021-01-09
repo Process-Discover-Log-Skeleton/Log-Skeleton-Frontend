@@ -145,11 +145,12 @@ const useProvideLogSkeleton = () => {
             
             // Set config
             setConfig({
-                ...defaultConfig, // Keep noise threshold
+                ...config,
                 id: id,
                 file: file.name,
                 fileContent: file,
-                status: 'ok'
+                status: 'ok',
+                csvOptions: null
             })
 
             setFilteredLogSkeleton({
@@ -168,7 +169,8 @@ const useProvideLogSkeleton = () => {
                 file: file.name,
                 fileContent: file,
                 status: 'failure',
-                errors: err.error
+                errors: err.error,
+                csvOptions: null
             })
 
             setLogSkeleton(defaultLS)
@@ -200,15 +202,19 @@ const useProvideLogSkeleton = () => {
     }
 
     // Api event-log registration
-    const registerEventLog = async (file, eventID = null, caseID = null) => {
+    const registerEventLog = async (file, caseID = null, casePrefix = null) => {
         // Attach the file to a FormData
         const fd = new FormData()
         fd.append('file', file)
 
         var csvField = ''
 
-        if (eventID != null && caseID != null) {
-            csvField = `event-id=${eventID}&case-id=${caseID}`
+        if (caseID !== null) {
+            csvField = `case-id=${caseID}`
+
+            if (casePrefix !== null) {
+                csvField += `&case-prefix=${casePrefix}`
+            }
         }
 
         try {
@@ -324,7 +330,16 @@ const useProvideLogSkeleton = () => {
                     autoDismissTimeout: 3000
                 })
 
-                registerEventLog(config.fileContent)
+                console.log(config);
+                var caseID;
+                var casePrefix;
+
+                if (config.file.endsWith('.csv') && config.caseID !== null) {
+                    caseID = config.caseID
+                    casePrefix = config.casePrefix
+                }
+
+                registerEventLog(config.fileContent, caseID, casePrefix)
 
                 return
             }

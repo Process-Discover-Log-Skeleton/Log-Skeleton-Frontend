@@ -4,10 +4,10 @@ import styles from '../styles/CSVPicker.module.css'
 import { ReactComponent as DismissIcon } from '../assets/dismiss.svg'
 
 export const CSVColumnPicker = ({columns}) => {
-    const { config, registerEventLog, clear } = useLogSkeleton()
+    const { config, registerEventLog, clear, setConfig } = useLogSkeleton()
 
     const [idSelection, setIDSelection] = useState(columns[0])
-    const [caseSelection, setCaseSelection] = useState(columns[0])
+    const [prefixSelection, setPrefixSelection] = useState(null)
 
     if (columns.length === 0) {
         return <></>
@@ -15,14 +15,22 @@ export const CSVColumnPicker = ({columns}) => {
 
     const onChangeID = (event) => {
         setIDSelection(event.target.value)
+        setConfig({
+            ...config,
+            caseID: event.target.value
+        })
     }
 
     const onChangeCase = (event) => {
-        setCaseSelection(event.target.value)
+        setPrefixSelection(event.target.value)
+        setConfig({
+            ...config,
+            casePrefix: event.target.value
+        })
     }
 
     const onSubmit = () => {
-        registerEventLog(config.fileContent, idSelection, caseSelection)
+        registerEventLog(config.fileContent, idSelection, prefixSelection)
     }
 
     return (
@@ -34,7 +42,7 @@ export const CSVColumnPicker = ({columns}) => {
                     <DismissIcon width="15px"/>
                 </button>
                 <div className={styles.content}>
-                    <div className={styles.title}>Pick the event identifier</div>
+                    <div className={styles.title}>Pick the trace identifier</div>
                     <select 
                         className={styles.selection}
                         onChange={onChangeID}
@@ -52,23 +60,14 @@ export const CSVColumnPicker = ({columns}) => {
                         }
                     </select>
 
-                    <div className={styles.title}>Pick the trace identifier</div>
-                    <select 
-                        className={styles.selection}
+                    <div className={styles.title}>Define a custom case prefix</div>
+                    <input
+                        className={styles.caseInput}
                         onChange={onChangeCase}
-                        >
-                        {
-                            columns.map(item => {
-                                return (
-                                    <option
-                                        key={item}
-                                        value={item}>
-                                            {item}
-                                    </option>
-                                )
-                            })
-                        }
-                    </select>
+                        value={prefixSelection}
+                        placeholder="case:"
+                        />
+                    <div className={styles.subTitle}>*The case prefix value defaults to `case:`</div>
 
                     <button
                         className={styles.submit}
