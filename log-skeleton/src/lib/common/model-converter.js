@@ -59,8 +59,11 @@ const reduceEdges = (edges) => {
     // Remove double next_both_ways
     edges = combineRelationship(edges, 'next_both_ways', 'next_both_ways', 'next_both_ways', 2)
 
+    // Remove double always after
+    edges = combineRelationship(edges, 'always_after', 'always_after', 'always_after_end', 1)
+
     // Remove double always before
-    // edges = combineRelationship(edges, 'always_before', 'always_before', 'always_before', 1)
+    edges = combineRelationship(edges, 'always_before', 'always_before', 'always_before_combine', 1)
 
     return edges
 }

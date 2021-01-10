@@ -5,8 +5,7 @@ import RangeSlider from 'react-bootstrap-range-slider';
 
 const Slider = () =>{
     const { config, fetchLogSkeleton } = useLogSkeleton()
-
-    //TODO: set initial noise (from the model)
+    
     const [ value, setValue ] = useState(0.0);
 
     useEffect(() => {

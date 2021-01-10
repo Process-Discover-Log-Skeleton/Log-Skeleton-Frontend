@@ -76,6 +76,36 @@ export const generateMarkers = (svg, radius) => {
         // .attr('x', '-2.5')
         .attr('y', '-2.25')
 
+    const always_before_end = svg.append('defs')
+    .append('marker')
+    .attr('id', 'always_before_combine')
+    .attr('viewBox', '0 -2.5 10 5')
+    .attr('refX', radius + 2)
+    .attr('refY', 0)
+    .attr('orient', 'auto')
+    .attr('markerWidth', 10)
+    .attr('markerHeight', 5)
+    .attr('xoverflow', 'visible')
+
+    always_before_end
+        .append('svg:path')
+        .attr('d', 'M 0 -2.5 L 5 0 L 0 2.5 L 0 -2.5')
+        .attr('fill', '#000')
+        .style('stroke','none')
+        .style('stroke-width', 'none')
+        .attr('x', '-2.5')
+        .attr('y', '-2.25')
+
+    always_before_end
+        .append('rect')
+        .attr('width', 4.5)
+        .attr('height', 4.5)
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+        .attr('stroke-width', '0.75px')
+        .attr('x', '5')
+        .attr('y', '-2.25')
+
     // -------------------
     // Always before x Always after
     // -------------------
