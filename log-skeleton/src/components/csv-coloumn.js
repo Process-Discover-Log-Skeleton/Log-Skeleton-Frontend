@@ -23,7 +23,7 @@ export const CSVColumnPicker = ({columns}) => {
 
     const onChangeCase = (event) => {
         var val = event.target.value
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             val = null
         }
 
