@@ -29,7 +29,8 @@ const defaultConfig = {
     // Parameters of the LS model
     parameters: {
         noiseThreshold: 0.0
-    }
+    },
+    csvOptions: null
 }
 
 const defaultLS = {
@@ -144,11 +145,12 @@ const useProvideLogSkeleton = () => {
             
             // Set config
             setConfig({
-                ...defaultConfig, // Keep noise threshold
+                ...config,
                 id: id,
                 file: file.name,
                 fileContent: file,
-                status: 'ok'
+                status: 'ok',
+                csvOptions: null
             })
 
             setFilteredLogSkeleton({
@@ -167,7 +169,8 @@ const useProvideLogSkeleton = () => {
                 file: file.name,
                 fileContent: file,
                 status: 'failure',
-                errors: err.error
+                errors: err.error,
+                csvOptions: null
             })
 
             setLogSkeleton(defaultLS)
@@ -199,14 +202,24 @@ const useProvideLogSkeleton = () => {
     }
 
     // Api event-log registration
-    const registerEventLog = async (file) => {
+    const registerEventLog = async (file, caseID = null, casePrefix = null) => {
         // Attach the file to a FormData
         const fd = new FormData()
         fd.append('file', file)
 
+        var csvField = ''
+
+        if (caseID !== null) {
+            csvField = `case-id=${caseID}`
+
+            if (casePrefix !== null) {
+                csvField += `&case-prefix=${casePrefix}`
+            }
+        }
+
         try {
             // Post the event-log to the backend
-            var response = await fetch(`${apiURL}/event-log`, {
+            var response = await fetch(`${apiURL}/event-log?${csvField}`, {
                 method: 'POST',
                 body: fd
             })
@@ -275,6 +288,8 @@ const useProvideLogSkeleton = () => {
             return
         }
 
+        console.log(res.status)
+
         if (res.ok) { // Response is okay
             const { activities, parameters, model } = await res.json()
             // console.log(activities);
@@ -302,7 +317,7 @@ const useProvideLogSkeleton = () => {
             })
 
             setActiveActivities(activities)
-        } else if (res.status === '410') { // Missing resource
+        } else if (res.status === 410) { // Missing resource
             // At this point potentially the server 
             // shut down during the session and the 
             // event log has to get reregistered
@@ -315,7 +330,16 @@ const useProvideLogSkeleton = () => {
                     autoDismissTimeout: 3000
                 })
 
-                registerEventLog(config.fileContent)
+                console.log(config);
+                var caseID;
+                var casePrefix;
+
+                if (config.file.endsWith('.csv') && config.caseID !== null) {
+                    caseID = config.caseID
+                    casePrefix = config.casePrefix
+                }
+
+                registerEventLog(config.fileContent, caseID, casePrefix)
 
                 return
             }
@@ -417,6 +441,13 @@ const useProvideLogSkeleton = () => {
         })
     }
 
+    const setCSVColumns = (items) => {
+        setConfig ({
+            ...config,
+            csvOptions: items
+        })
+    }
+
     return {
         logSkeleton, // The model object
         filteredLogSkeleton,
@@ -440,6 +471,8 @@ const useProvideLogSkeleton = () => {
         setRequiredActivities,
         setForbiddenActivities,
         activityDisplayName,
-        setNoiseThreshold
+        setNoiseThreshold,
+        setCSVColumns,
+        setConfig
     }
 }

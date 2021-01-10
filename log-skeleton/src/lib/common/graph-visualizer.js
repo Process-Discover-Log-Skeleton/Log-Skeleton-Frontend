@@ -57,6 +57,9 @@ export const runForceGraph = (container) => {
     const width = containerRect.width
     const height = containerRect.height
 
+    zoom = d3.zoomIdentity
+    showToolTip = false
+
     const hideTooltip = () =>  {
         currentTooltipNode = null
         showToolTip = false
@@ -147,7 +150,7 @@ export const runForceGraph = (container) => {
         .force("link", d3.forceLink()
             .id(function (d) { return d.id; }))
         .force("charge", d3.forceManyBody()
-            .strength(function (d) { return -2000; }))
+            .strength(function (d) { return -1500; }))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0.02)
         .velocityDecay(0.8)

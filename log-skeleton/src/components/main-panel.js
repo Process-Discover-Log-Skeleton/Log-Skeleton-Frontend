@@ -3,6 +3,8 @@ import { ReactComponent as LogSkeletonIcon } from '../assets/logSkeleton.svg'
 import styles from '../styles/MainPanel.module.css'
 import { useRef } from 'react'
 import GraphVisualizer from './graph-visualisation'
+import { extractCSVColumns } from '../lib/common/csv-columns'
+import { useToasts } from 'react-toast-notifications'
 
 const MainPanel = () => {
     const logSkeleton = useLogSkeleton()
@@ -24,16 +26,48 @@ const MainPanel = () => {
 }
 
 const EmptyLogSkeleton = () => {
-    const { registerEventLog, registerExampleEventLog } = useLogSkeleton()
+    const { config, 
+            registerEventLog, 
+            registerExampleEventLog, 
+            setConfig } = useLogSkeleton()
+
     const filePicker = useRef(null)
+    const { addToast } = useToasts()
 
     const loadEventLog = (event) => {
         event.preventDefault()
+        filePicker.current.value = null
         filePicker.current.click()
     }
 
     const onLoad = (event) => {
         const file = event.target.files
+
+        // CSV File
+        if (file[0] !== null && file[0].name.endsWith('csv')) {
+
+            extractCSVColumns(file[0], (csv, err) => {
+                if (err !== null) {
+                    // Something is wrong
+                    // ->> Notify user
+                    addToast('Cannot read CSV file.', {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
+
+                    return
+                }
+
+                // Set the config
+                // ->> This will trigger the CSV-Picker to show.
+                setConfig({
+                    ...config,
+                    csvOptions: csv,
+                    fileContent: file[0]
+                })
+            })
+            return
+        }
 
         registerEventLog(file[0])
     }
@@ -47,7 +81,11 @@ const EmptyLogSkeleton = () => {
             <div className={styles.eventLogContent}>
                 <LogSkeletonIcon width="70" height="70" stroke="black"></LogSkeletonIcon>
                 <span className={styles.noEventLogTitle}>Load your event log to get started!</span>
-                <input type="file" ref={filePicker} style={{ display: "none" }} onChange={onLoad} />
+                <input 
+                    type="file" 
+                    ref={filePicker}
+                    style={{ display: "none" }} 
+                    onChange={onLoad} />
                 <button
                     className={styles.noEventLogButton}
                     onClick={loadEventLog}>
