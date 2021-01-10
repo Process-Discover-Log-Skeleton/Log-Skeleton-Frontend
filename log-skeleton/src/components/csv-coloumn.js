@@ -22,10 +22,15 @@ export const CSVColumnPicker = ({columns}) => {
     }
 
     const onChangeCase = (event) => {
-        setPrefixSelection(event.target.value)
+        var val = event.target.value
+        if (event.target.value == '') {
+            val = null
+        }
+
+        setPrefixSelection(val)
         setConfig({
             ...config,
-            casePrefix: event.target.value
+            casePrefix: val
         })
     }
 
