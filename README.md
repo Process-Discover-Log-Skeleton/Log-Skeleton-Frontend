@@ -25,6 +25,12 @@ This project requires `node.js`, `npm` and `python 3.8` to run as  intended. The
     >>> cd log-skeleton
     >>> npm install
     ```
+- Create a `.env` file in the `log-skeleton` directory
+ 
+  Paste in the following line and replace the placeholder.
+  ```
+  REACT_APP_API_URL=<replace-with-url-to-your-backend>
+   ```
 
 ###### Setup of the production environment
 
