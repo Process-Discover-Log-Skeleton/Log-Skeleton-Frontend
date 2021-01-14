@@ -8,7 +8,7 @@
     overflow: auto;
 }
 
-.container::-webkit-scrollbar {
+/* .container::-webkit-scrollbar {
     width: 6px;
 }
   
@@ -20,7 +20,7 @@
     background-color: rgba(173, 173, 173, 0.541);  
     border-radius: 6px;
     border: none;
-}
+} */
 
 .contentContainer {
     display: grid;
@@ -115,4 +115,15 @@ input {
     background: rgb(37, 107, 187);
 }
 
+.slider::-ms-thumb {
+    width: 15px;
+    height: 15px;
+    background: rgb(3, 102, 214);
+    cursor: pointer;
+    border-radius: 7.5px;
+}
 
+
+.slider::-ms-thumb:hover {
+    background: rgb(37, 107, 187);
+}
